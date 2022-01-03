@@ -30,7 +30,12 @@ class Bs_Formular2_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+        delete_option("bs_formular_product_install_authorize");
+        delete_option("bs_formular_client_id");
+        delete_option("bs_formular_client_secret");
+        delete_option("bs_formular_message");
+        delete_option("bs_formular_access_token");
+        $infoTxt = 'deaktiviert am ' . date('d.m.Y H:i:s')."\r\n";
+        file_put_contents(BS_FORMULAR_PLUGIN_ADMIN_DIR.'hupa-bs-formular',$infoTxt,  FILE_APPEND | LOCK_EX);
 	}
-
 }

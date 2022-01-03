@@ -1,4 +1,6 @@
 <?php
+namespace BS\Formular2;
+use Bs_Formular2;
 
 /**
  * The public-facing functionality of the plugin.
@@ -29,7 +31,7 @@ class Bs_Formular2_Public {
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
-	private $plugin_name;
+	private string $plugin_name;
 
 	/**
 	 * The version of this plugin.
@@ -38,19 +40,28 @@ class Bs_Formular2_Public {
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
-	private $version;
+	private string $version;
+
+    /**
+     * Store plugin main class to allow public access.
+     *
+     * @since    1.0.0
+     * @var Bs_Formular2 $main          The main class.
+     */
+    protected Bs_Formular2 $main;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
+	 * @param string    $plugin_name    The name of the plugin.
+	 * @param string    $version        The version of this plugin.
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct(string $plugin_name, string $version, $main ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+        $this->main = $main;
 
 	}
 
@@ -65,7 +76,7 @@ class Bs_Formular2_Public {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Bs_Formular2_Loader as all of the hooks are defined
+		 * defined in Bs_Formular2_Loader as all the hooks are defined
 		 * in that particular class.
 		 *
 		 * The Bs_Formular2_Loader will then create the relationship
@@ -88,7 +99,7 @@ class Bs_Formular2_Public {
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Bs_Formular2_Loader as all of the hooks are defined
+		 * defined in Bs_Formular2_Loader as all the hooks are defined
 		 * in that particular class.
 		 *
 		 * The Bs_Formular2_Loader will then create the relationship

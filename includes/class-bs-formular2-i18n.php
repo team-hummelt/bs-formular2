@@ -37,11 +37,8 @@ class Bs_Formular2_i18n {
 		load_plugin_textdomain(
 			'bs-formular2',
 			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+			dirname(plugin_basename(__FILE__), 2) . '/languages/'
 		);
-
 	}
-
-
 
 }
