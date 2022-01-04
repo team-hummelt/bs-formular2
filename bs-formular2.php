@@ -177,15 +177,16 @@ if ( is_admin() ) {
         require_once 'vendor/autoload.php';
     }
 
-    if ( get_option( 'bs_formular_product_install_authorize' ) ) {
-        delete_transient('bs_formular2_show_lizenz_info');
-        if ( get_option( 'hupa_bs_formular_server_api' )['update_aktiv'] == '1' ) {
+    get_option(BS_FORMULAR2_BASENAME . '_server_api') !== null ? $options =  get_option(BS_FORMULAR2_BASENAME . '_server_api') : $options = '';
+    if ($options && $options['product_install_authorize'] ) {
+        delete_transient('bs-formular2_lizenz_info');
+        if ( $options['update_aktiv'] == '1' ) {
             $bsFormular2UpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-                get_option( 'hupa_bs_formular_server_api' )['update_url'],
+                $options['update_url'],
                 __FILE__,
                 BS_FORMULAR2_BASENAME
             );
-            if ( get_option( 'hupa_bs_formular_server_api' )['update_type'] == '1' ) {
+            if ( $options['update_type'] == '1' ) {
                 $bsFormular2UpdateChecker->getVcsApi()->enableReleaseAssets();
             }
         }
@@ -211,7 +212,15 @@ if ( is_admin() ) {
     }
 }
 
+function showWPHupaApiBSForm2Info() {
+    if ( get_transient( BS_FORMULAR2_BASENAME.'_lizenz_info' ) ) {
+        echo '<div class="error"><p>' .
+            'BS-Formular2 ungültige Lizenz: Zum Aktivieren geben Sie Ihre Zugangsdaten ein.' .
+            '</p></div>';
+    }
+}
 
+add_action( 'admin_notices', 'showWPHupaApiBSForm2Info' );
 
 /**
  * The core plugin class that is used to define internationalization,

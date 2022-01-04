@@ -81,8 +81,8 @@ final class Hupa_License_Register
     public function register_hupa_license_menu(): void
     {
         $hook_suffix = add_menu_page(
-            __('BS-Formular', 'bs-formular2'),
-            __('BS-Formular', 'bs-formular2'),
+            __('BS-Formular2', 'bs-formular2'),
+            __('BS-Formular2', 'bs-formular2'),
             'manage_options',
             $this->basename . '-license',
             array($this, 'hupa_license_page'),

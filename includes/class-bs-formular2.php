@@ -29,9 +29,9 @@
  */
 
 
-use BS\Formular2\Bs_Formular2_Public;
 use BS\Formular2\Bs_Formular2_Admin;
 use BS\Formular2\BS_Formular2_Options;
+use BS\Formular2\Bs_Formular2_Public;
 use BSFormular2\License\Hupa_License_Register;
 use BSFormular2APIExec\EXEC\Hupa_License_Exec_Api;
 use Hupa\BsFormular2License\Hupa_Server_WP_Remote_Handle;
@@ -306,7 +306,8 @@ class Bs_Formular2 {
      * @since    1.0.0
      * @access   private
      */
-    private function register_bs_formular2_license() {
+    private function register_bs_formular2_license()
+    {
 
 
         $this->license = Hupa_License_Register::instance($this->get_plugin_name(), $this->get_version());
@@ -315,13 +316,15 @@ class Bs_Formular2 {
          */
         // TODO REGISTER LICENSE MENU
 
-        if(!get_option('bs_formular_product_install_authorize')) {
-            $this->loader->add_action('admin_menu',$this->license, 'register_hupa_license_menu');
+
+        $options = get_option($this->plugin_name . '_server_api');
+        if (!$options['product_install_authorize']) {
+            $this->loader->add_action('admin_menu', $this->license, 'register_hupa_license_menu');
         }
 
         $this->loader->add_action('wp_ajax_BsFormularLicenceHandle', $this->license, 'prefix_ajax_BsFormularLicenceHandle');
-        $this->loader->add_action( 'init', $this->license, 'hupa_license_site_trigger_check' );
-        $this->loader->add_action( 'template_redirect',$this->license, 'hupa_license_callback_trigger_check');
+        $this->loader->add_action('init', $this->license, 'hupa_license_site_trigger_check');
+        $this->loader->add_action('template_redirect', $this->license, 'hupa_license_callback_trigger_check');
 
         /** Register License API EXEC CLASS
          * @since    1.0.0
@@ -351,7 +354,6 @@ class Bs_Formular2 {
      */
     private function bs_formular2_options()
     {
-
         $this->options = BS_Formular2_Options::instance();
         $this->loader->add_action('init', $this->options, 'bs_formular2_set_default_options');
         $this->loader->add_action('bs_formular_array_to_object', $this->options, 'bsFormular2ArrayToObject');
