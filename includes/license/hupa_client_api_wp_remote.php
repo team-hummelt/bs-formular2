@@ -75,7 +75,7 @@ class Hupa_Server_WP_Remote_Handle
         //TODO JOB GET Resources Endpoints
         add_filter($this->basename . '/get_scope_resource', array($this, 'GETApiResource'), 10, 2);
         //TODO JOB VALIDATE SOURCE BY Authorization Code
-        add_filter($this->basename .' /get_resource_authorization_code', array($this, 'InstallByAuthorizationCode'));
+        add_filter($this->basename . '/get_resource_authorization_code', array($this, 'InstallByAuthorizationCode'));
         //TODO JOB SERVER URL ÄNDERN FALLS NÖTIG
         add_filter($this->basename . '/update_server_url', array($this, 'UpdateServerUrl'));
     }
@@ -125,8 +125,8 @@ class Hupa_Server_WP_Remote_Handle
             return $apiData;
         }
         
-        $access_token =  $this->options['access_token'] = $apiData->access_token;
-        update_option($this->options, $access_token);
+        $this->options['access_token'] = $apiData->access_token;
+        update_option($this->basename . '_server_api', $this->options);
         $body = [
             'version' => $this->version,
         ];
@@ -217,8 +217,8 @@ class Hupa_Server_WP_Remote_Handle
         $response = wp_remote_post($token_url, $args);
         if (!is_wp_error($response)) {
             $apiData = json_decode($response['body']);
-            $access_token =  $this->options['access_token'] = $apiData->access_token;
-            update_option($this->options, $access_token);
+            $this->options['access_token'] = $apiData->access_token;
+            update_option($this->basename . '_server_api', $this->options);
         }
     }
 
@@ -289,7 +289,7 @@ class Hupa_Server_WP_Remote_Handle
     public function ApiDownloadFile($url, $body = [])
     {
 
-        $bearerToken = get_option('bs_formular_access_token');
+        $bearerToken = $this->options['access_token'];
         $args = [
             'method' => 'POST',
             'timeout' => 45,

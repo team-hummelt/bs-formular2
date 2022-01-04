@@ -16,17 +16,16 @@ $file = '';
 $options = get_option($this->basename . '_server_api');
 if ($code) {
     $response = apply_filters($this->basename . '/get_resource_authorization_code', $code);
+
     if ($response->status) {
         if ($response->if_file) {
             $file = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR . $response->aktivierung_path;
             file_put_contents($file, $response->install_datei);
         }
-        $install_time = $options['install_time'] = current_time('mysql');
-        update_option($options, $install_time);
-        $product_install_authorize = $options['product_install_authorize'] = true;
-        update_option($options, $product_install_authorize);
-        $license_message = $options['license_message'] = '';
-        update_option($options, $license_message);
+        $options['install_time'] = current_time('mysql');
+        $options['product_install_authorize'] = true;
+        $options['license_message'] = '';
+        update_option($this->basename . '_server_api', $options);
     } else {
         $errMsg = 'Plugin konnte nicht aktiviert werden!';
     }
@@ -34,6 +33,9 @@ if ($code) {
     $registerShow = 'd-none';
 }
 $reloadUrl=admin_url();
+print_r($options);
+$t = apply_filters($this->basename . '/scope_resource', 'news');
+var_dump($t);
 ?>
 
 <div id="wp-activate-license-wrapper">

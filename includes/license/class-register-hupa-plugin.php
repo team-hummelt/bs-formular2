@@ -124,7 +124,7 @@ final class Hupa_License_Register
      * ==================================================
      */
 
-    public function prefix_ajax_BsFormularLicenceHandle(): void {
+    public function prefix_ajax_BsFormular2LicenceHandle(): void {
         $baseName = str_replace(['-', ' '], '_', $this->basename);
         $responseJson = null;
         check_ajax_referer( $baseName. '_license_handle' );
@@ -156,7 +156,7 @@ final class Hupa_License_Register
 
     public function load_hupa_license_admin_style(): void
     {
-        wp_enqueue_style($this->basename . '-license-style',plugins_url('bs-formular') . '/inc/license/assets/license-backend.css', array(), '');
-        wp_enqueue_script($this->basename . '-license-script', plugins_url('bs-formular') . '/inc/license/license-script.js', array(), '', true );
+        wp_enqueue_style($this->basename . '-license-style',plugins_url('bs-formular2') . '/includes/license/assets/license-backend.css', array(), $this->version);
+        wp_enqueue_script($this->basename . '-license-script', plugins_url('bs-formular2') . '/includes/license/license-script.js', array(), $this->version, true );
     }
 }

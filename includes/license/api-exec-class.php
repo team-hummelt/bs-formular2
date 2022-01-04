@@ -150,20 +150,20 @@ final class Hupa_License_Exec_Api
         $getJob = $getJob->record;
         switch ($getJob->exec_id) {
             case '1':
-                $update = $this->options['license_url'] = site_url();
-                update_option($this->options, $update);
+                $this->options['license_url'] = site_url();
+                update_option($this->basename . '_server_api', $this->options);
                 $status = true;
                 $msg = 'Lizenz Url erfolgreich geändert.';
                 break;
             case '2':
-                $update = $this->options['client_id'] = $getJob->client_id;
-                update_option($this->options, $update);
+                $this->options['client_id'] = $getJob->client_id;
+                update_option($this->basename . '_server_api', $this->options);
                 $status = true;
                 $msg = 'Client ID erfolgreich geändert.';
                 break;
             case '3':
-                $update = $this->options['client_secret'] = $getJob->client_secret;
-                update_option($this->options, $update);
+                $this->options['client_secret'] = $getJob->client_secret;
+                update_option($this->basename . '_server_api', $this->options);
                 $status = true;
                 $msg = 'Client Secret erfolgreich geändert.';
                 break;
@@ -184,17 +184,12 @@ final class Hupa_License_Exec_Api
                     } else {
                         $status = true;
                         $msg = 'Plugin erfolgreich aktiviert.';
-                        $client_id = $this->options['client_id'] = $getJob->client_id;
-                        update_option($this->options, $client_id);
-                        $client_secret = $this->options['client_secret'] = $getJob->client_secret;
-                        update_option($this->options, $client_secret);
-                        $license_url = $this->options['license_url'] = site_url();
-                        update_option($this->options, $license_url);
-                        $product_install_authorize = $this->options['product_install_authorize'] = true;
-                        update_option($this->options, $product_install_authorize);
-                        $license_message = $this->options['license_message'] = '';
-                        update_option($this->options, $license_message);
-
+                        $this->options['client_id'] = $getJob->client_id;
+                        $this->options['client_secret'] = $getJob->client_secret;
+                        $this->options['license_url'] = site_url();
+                        $this->options['product_install_authorize'] = true;
+                        $this->options['license_message'] = '';
+                        update_option($this->basename . '_server_api', $this->options);
                     }
                 } else {
                     $status = false;
@@ -204,16 +199,12 @@ final class Hupa_License_Exec_Api
             case '5':
                 deactivate_plugins( $this->plugin_slug );
                 set_transient($this->basename . '_show_lizenz_info', true, 5);
-                $client_id = $this->options['client_id'] = '';
-                update_option($this->options, $client_id);
-                $client_secret = $this->options['client_secret'] = '';
-                update_option($this->options, $client_secret);
-                $license_url = $this->options['license_url'] = '';
-                update_option($this->options, $license_url);
-                $product_install_authorize = $this->options['product_install_authorize'] = false;
-                update_option($this->options, $product_install_authorize);
-                $license_message = $this->options['license_message'] = 'Das Plugin '.strtoupper($this->basename).' wurde deaktiviert. Wenden Sie sich an den Administrator.';
-                update_option($this->options, $license_message);
+                $this->options['client_id'] = '';
+                $this->options['client_secret'] = '';
+                $this->options['license_url'] = '';
+                $this->options['product_install_authorize'] = false;
+                $this->options['license_message'] = 'Das Plugin ' . strtoupper($this->basename).' wurde deaktiviert. Wenden Sie sich an den Administrator.';
+                update_option($this->basename . '_server_api', $this->options);
 
                 $status = true;
                 $msg = strtoupper($this->basename) . ' erfolgreich deaktiviert.';
@@ -235,21 +226,16 @@ final class Hupa_License_Exec_Api
                 }
                 break;
             case '7':
-                $client_id = $this->options['client_id'] = '';
-                update_option($this->options, $client_id);
-                $client_secret = $this->options['client_secret'] = '';
-                update_option($this->options, $client_secret);
-                $license_url = $this->options['license_url'] = '';
-                update_option($this->options, $license_url);
-                $product_install_authorize = $this->options['product_install_authorize'] = false;
-                update_option($this->options, $product_install_authorize);
-                $license_message = $this->options['license_message'] = 'Das Plugin ' . strtoupper($this->basename) . ' wurde deaktiviert. Wenden Sie sich an den Administrator.';
-                update_option($this->options, $license_message);
+                $this->options['client_id'] = '';
+                $this->options['client_secret'] = '';
+                $this->options['license_url'] = '';
+                $this->options['product_install_authorize'] = false;
+                $this->options['license_message'] = 'Das Plugin ' . strtoupper($this->basename) . ' wurde deaktiviert. Wenden Sie sich an den Administrator.';
+                update_option($this->basename . '_server_api', $this->options);
 
                 $file = $this->plugin_dir . DIRECTORY_SEPARATOR . $getJob->file_path;
                 $input = '';
                 file_put_contents($file, $input);
-                //unlink($file);
                 $status = true;
                 $msg = 'Aktivierungs File erfolgreich gelöscht.';
                 deactivate_plugins( $this->plugin_slug );
@@ -278,20 +264,18 @@ final class Hupa_License_Exec_Api
                     $url = '';
                 }
 
-                $update_aktiv = $this->options['update_aktiv'] = $update_aktiv;
-                update_option($this->options, $update_aktiv);
-                $update_type = $this->options['update_type'] = $getJob->update_type;
-                update_option($this->options, $update_type);
-                $update_url = $this->options['update_url'] = $url;
-                update_option($this->options, $update_url);
+                $this->options['update_aktiv'] = $update_aktiv;
+                $this->options['update_type'] = $getJob->update_type;
+                $this->options['update_url'] = $url;
+                update_option($this->basename . '_server_api', $this->options);
 
                 $status = true;
                 $msg = 'Update Methode aktualisiert.';
                 break;
             case'11':
                $updateUrl = apply_filters($this->basename . '/scope_resource', 'hupa-update/url');
-               $update_url = $this->options['update_url'] = $updateUrl->url;
-               update_option($this->options, $update_url);
+               $this->options['update_url'] = $updateUrl->url;
+               update_option($this->basename . '_server_api', $this->options);
 
                 $status = true;
                 $msg = 'URL Token aktualisiert.';

@@ -30,16 +30,15 @@ switch ($method) {
             $responseJson->if_authorize = true;
             return;
         }
-        $license_url = $options['license_url'] = site_url();
-        update_option($options, $license_url);
+        $options['license_url'] = site_url();
+        update_option($this->basename.'_server_api', $options);
         if(!get_option('hupa_server_url')){
             update_option('hupa_server_url','https://start.hu-ku.com/theme-update/api/v2/');
         }
 
-        $update_client_id = $options['client_id'] = $client_id;
-        update_option( $options, $update_client_id );
-        $update_client_secret = $options['client_secret'] = $client_secret;
-        update_option( $options, $update_client_secret );
+        $options['client_id'] = $client_id;
+        $options['client_secret'] = $client_secret;
+        update_option( $this->basename . '_server_api', $options );
 
         $responseJson->status = true;
         $responseJson->send_url = apply_filters($this->basename . '/api_urls', 'authorize_url');

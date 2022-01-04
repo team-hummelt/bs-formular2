@@ -322,7 +322,7 @@ class Bs_Formular2 {
             $this->loader->add_action('admin_menu', $this->license, 'register_hupa_license_menu');
         }
 
-        $this->loader->add_action('wp_ajax_BsFormularLicenceHandle', $this->license, 'prefix_ajax_BsFormularLicenceHandle');
+        $this->loader->add_action('wp_ajax_BsFormular2LicenceHandle', $this->license, 'prefix_ajax_BsFormular2LicenceHandle');
         $this->loader->add_action('init', $this->license, 'hupa_license_site_trigger_check');
         $this->loader->add_action('template_redirect', $this->license, 'hupa_license_callback_trigger_check');
 
