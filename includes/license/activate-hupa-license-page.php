@@ -33,9 +33,7 @@ if ($code) {
     $registerShow = 'd-none';
 }
 $reloadUrl=admin_url();
-print_r($options);
-$t = apply_filters($this->basename . '/scope_resource', 'news');
-var_dump($t);
+
 ?>
 
 <div id="wp-activate-license-wrapper">

@@ -127,14 +127,8 @@ define("BS_FORMULAR2_INC", WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . plugin_basename
 // E-MAIL TEMPLATE FOLDER
 const EMAIL_TEMPLATES_DIR = BS_FORMULAR2_INC . 'templates' . DIRECTORY_SEPARATOR;
 
-//PLUGIN ASSETS URL
-define('BS_FORMULAR_PLUGIN_ASSETS_URL', plugins_url('bs-formular') . '/assets/public/');
-
 //PLUGIN GUTENBERG DATA PATH
 const BS_FORMULAR_GUTENBERG_DATA = BS_FORMULAR2_INC . 'gutenberg' . DIRECTORY_SEPARATOR . 'plugin-data' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
-//PLUGIN GUTENBERG DATA URL
-define('BS_FORMULAR_GUTENBERG_URL', plugins_url('bs-formular') . '/inc/gutenberg/plugin-data/build/');
-
 
 /**
  * PLUGIN UPLOAD DIR for Formular Upload Function

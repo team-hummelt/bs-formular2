@@ -16,10 +16,10 @@ trait BS_Formular2_Defaults_Trait
 {
 
     //DATABASE TABLES
-    protected string $table_formulare = 'bs_formulare';
-    protected string $table_form_message = 'bs_form_message';
-    protected string $table_settings = 'bs_form_settings';
-    protected string $table_email = 'bs_post_eingang';
+    protected string $table_formulare2 = 'bs_formulare2';
+    protected string $table_formular2_message = 'bs_formular2_message';
+    protected string $table_formular2_settings = 'bs_formular2_settings';
+    protected string $table_formular2_post_eingang = 'bs_formular2_post_eingang';
 
     //SETTINGS DEFAULT OBJECT
     protected array $bs_formular2_default_values;
@@ -50,6 +50,8 @@ trait BS_Formular2_Defaults_Trait
     {
 
         $this->bs_formular2_default_values = [
+
+            // JOB E-MAIL DEFAULT SMTP AND Upload Settings
             'email_settings' => [
                 'email_empfang_aktiv' => $this->email_empfang_aktiv,
                 'email_abs_name' => $this->email_abs_name,
@@ -66,6 +68,138 @@ trait BS_Formular2_Defaults_Trait
                 'upload_max_files' => $this->upload_max_files,
                 'upload_mime_types' => $this->upload_mime_types,
                 'multi_upload' => $this->multi_upload
+            ],
+
+            //JOB File-Upload AJAX DE Language
+            'file_upload_language' => [
+                //Datei auswählen
+                'datei_select' => __('Select file', 'bs-formular2'),
+                //Datei hier per Drag & Drop ablegen.
+                'drag_file' => __('Drag and drop the file here.', 'bs-formular2'),
+                //Fehler beim Upload
+                'upload_err' => __('Upload error', 'bs-formular2'),
+                //erneut versuchen
+                'erneut_vers' => __('Try again', 'bs-formular2'),
+                //zum Abbrechen antippen
+                'tap_cancel' => __('Tap to cancel', 'bs-formular2'),
+                //zum Löschen klicken
+                'click_delete' => __('Click to delete', 'bs-formular2'),
+                //entfernen
+                'remove' => __('remove', 'bs-formular2'),
+
+                //Datei ist zu groß
+                'file_large' => __('File is too large', 'bs-formular2'),
+                //Maximale Dateigröße ist {filesize}
+                'max_filesize' => __('Maximum file size is {filesize}', 'bs-formular2'),
+                //Maximale Gesamtgröße überschritten
+                'max_total_size' => __('Maximum total size exceeded', 'bs-formular2'),
+                //Maximale Gesamtgröße der Datei ist {filesize}
+                'max_total_file' => __('Maximum total size of the file is {filesize}', 'bs-formular2'),
+                //Ungültiger Dateityp
+                'invalid_type' => __('Invalid file type', 'bs-formular2'),
+                //Erwartet {allButLastType} oder {lastType}
+                'expects' => __('Expects {allButLastType} or {lastType}', 'bs-formular2')
+            ],
+            // JOB Default Form Messages
+            'default_formular_messages' => [
+                '0' => [
+                    'id' => 1,
+                    'type' => 'success_message',
+                    'format' => 'success_message',
+                    'label' => 'Die Nachricht des Absenders wurde erfolgreich gesendet',
+                    'msg' => 'Die Nachricht wurde erfolgreich gesendet.'
+                ],
+                '1' => [
+                    'id' => 2,
+                    'format' => 'error_message',
+                    'type' => 'senden_error',
+                    'label' => 'Die Nachricht des Absenders konnte nicht gesendet werden',
+                    'msg' => 'Beim Versuch, Ihre Nachricht zu senden, ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.'
+                ],
+                '2' => [
+                    'id' => 3,
+                    'format' => 'form-message',
+                    'type' => 'form_required_fehler',
+                    'label' => 'Fehler beim Ausfüllen des Formulars',
+                    'msg' => 'Ein oder mehrere Felder haben einen Fehler. Bitte überprüfen Sie es und versuchen Sie es erneut.'
+                ],
+                '3' => [
+                    'id' => 4,
+                    'format' => 'spam',
+                    'type' => 'mail_spam',
+                    'label' => 'Eingabe wurde als Spam erkannt',
+                    'msg' => 'Beim Versuch, Ihre Nachricht zu senden, ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.'
+                ],
+                '4' => [
+                    'id' => 5,
+                    'format' => 'dataprotection',
+                    'type' => 'akzept_check',
+                    'label' => 'Es gibt Bedingungen, die der Absender akzeptieren muss',
+                    'msg' => 'Sie müssen die Bedingungen akzeptieren, bevor Sie Ihre Nachricht senden.'
+                ],
+                '5' => [
+                    'id' => 6,
+                    'format' => 'required',
+                    'type' => 'input_required_fehler',
+                    'label' => 'Es gibt ein Feld, das der Absender ausfüllen muss',
+                    'msg' => 'Dieses Feld muss ausgefüllt werden.'
+                ],
+                '6' => [
+                    'id' => 7,
+                    'format' => 'email',
+                    'type' => 'email_format_error',
+                    'label' => 'Die eingegebene E-Mail-Adresse des Absenders ist ungültig',
+                    'msg' => 'Die eingegebene E-Mail-Adresse ist ungültig.'
+                ],
+                '7' => [
+                    'id' => 8,
+                    'format' => 'url',
+                    'type' => 'url_format_error',
+                    'label' => 'Die eingegebene URL des Absenders ist ungültig',
+                    'msg' => 'Die URL ist unzulässig.'
+                ],
+                '8' => [
+                    'id' => 9,
+                    'format' => 'date',
+                    'type' => 'date_format_error',
+                    'label' => 'Das eingegebene Datumsformat ist ungültig',
+                    'msg' => 'Das Datumsformat ist falsch.'
+                ],
+                '9' => [
+                    'id' => 10,
+                    'format' => 'number',
+                    'type' => 'number_format_error',
+                    'label' => 'Die eingegebene Zahlenformat ist ungültig',
+                    'msg' => 'Das Zahlenformat ist ungültig.'
+                ],
+                '10' => [
+                    'id' => 11,
+                    'format' => 'select',
+                    'type' => 'select_format_error',
+                    'label' => 'Ein Feld aus einer Auswahlliste muss ausgewählt werden.',
+                    'msg' => 'Es muss ein Feld ausgewählt werden.'
+                ],
+                '11' => [
+                    'id' => 12,
+                    'format' => 'checkbox',
+                    'type' => 'checkbox_format_error',
+                    'label' => 'Eine Checkbox muss ausgewählt sein.',
+                    'msg' => 'Sie müssen dieser Bedingung zustimmen.'
+                ],
+                '12' => [
+                    'id' => 13,
+                    'format' => 'email-send-select',
+                    'type' => 'email_select_format_error',
+                    'label' => 'Eine E-Mail (E-Mail Select) muss aus einer Auswahlliste ausgewählt werden.',
+                    'msg' => 'Die ausgewählte E-Mail-Adresse ist ungültig.'
+                ],
+                '13' => [
+                    'id' => 14,
+                    'format' => 'file',
+                    'type' => 'file_upload_format_error',
+                    'label' => 'Ein Dateianhang (File-Upload) muss ausgewählt sein.',
+                    'msg' => 'Die ausgewählte Datei ist ungültig.'
+                ]
             ]
         ];
 

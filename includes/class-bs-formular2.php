@@ -29,10 +29,13 @@
  */
 
 
+use BS\BSFormular2\BS_Formular2_Helper;
+use BS\BSFormular2\BS_Formular_Settings_Table;
 use BS\Formular2\Bs_Formular2_Admin;
 use BS\Formular2\BS_Formular2_Options;
 use BS\Formular2\Bs_Formular2_Public;
 use BSFormular2\License\Hupa_License_Register;
+use BS\BSFormular2\BS_Formular2_Database;
 use BSFormular2APIExec\EXEC\Hupa_License_Exec_Api;
 use Hupa\BsFormular2License\Hupa_Server_WP_Remote_Handle;
 use JetBrains\PhpStorm\NoReturn;
@@ -75,6 +78,15 @@ class Bs_Formular2 {
      * @var      string    $db_version    The current database version of the plugin.
      */
     protected string $db_version;
+
+    /**
+     * The settings id for settings table of the plugin.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      int    $settings_id    The settings id for settings table.
+     */
+    protected int $settings_id;
 
     /**
      * Store plugin main class to allow public access.
@@ -140,6 +152,12 @@ class Bs_Formular2 {
             $this->db_version = '1.0.0';
         }
 
+        if ( defined( 'BS_FORMULAR2_SETTINGS_ID' ) ) {
+            $this->settings_id = BS_FORMULAR2_SETTINGS_ID;
+        } else {
+            $this->settings_id = 1;
+        }
+
 		$this->plugin_name = BS_FORMULAR2_BASENAME;
         $this->plugin_slug = BS_FORMULAR2_SLUG_PATH;
         $this->main = $this;
@@ -154,7 +172,12 @@ class Bs_Formular2 {
         $this->register_bs_formular2_license();
         // Set Settings Default-Optionen AND Helper Functions
         $this->bs_formular2_options();
-
+        // BS-Formular2 Database
+        $this->bs_formular2_database();
+        // BS-Formular2 Database
+        $this->bs_formular2_database_hooks();
+        //BS-Formular2 Helper
+        $this->bs_formular2_helper();
         $options = get_option($this->plugin_name . '_server_api');
         if ($options['product_install_authorize']) {
             $this->define_admin_hooks();
@@ -212,6 +235,19 @@ class Bs_Formular2 {
          * The class for the options of the BS-Formular2
          * of the plugin.
          */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/database/class-bs-formular2-database.php';
+
+        /**
+         * The class for the Database TABLE bs_formular2_settings
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/database/class-bs-formular2-settings-table.php';
+
+
+        /**
+         * The class for the Databse of the BS-Formular2
+         * of the plugin.
+         */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class_bs-formular2_options.php';
 
         /**
@@ -225,6 +261,13 @@ class Bs_Formular2 {
 		 * of the plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bs-formular2-i18n.php';
+
+
+        /**
+         * The BS-Formular2 Helper Class.
+         *
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bs-formular2-helper.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -309,7 +352,6 @@ class Bs_Formular2 {
     private function register_bs_formular2_license()
     {
 
-
         $this->license = Hupa_License_Register::instance($this->get_plugin_name(), $this->get_version());
         /** Register License Admin Menu
          * @since    1.0.0
@@ -356,8 +398,10 @@ class Bs_Formular2 {
     {
         $this->options = BS_Formular2_Options::instance();
         $this->loader->add_action('init', $this->options, 'bs_formular2_set_default_options');
-        $this->loader->add_action('bs_formular_array_to_object', $this->options, 'bsFormular2ArrayToObject');
+        $this->loader->add_action('get_bs_form2_default_settings', $this->options, 'func_get_bs_form2_default_settings',10 ,2);
 
+        global $bsForm2Option;
+        $bsForm2Option = $this->options;
     }
 
 	/**
@@ -374,7 +418,13 @@ class Bs_Formular2 {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-	}
+        // TODO GUTENBERG PLUGIN
+        $this->loader->add_action('init', $plugin_admin, 'gutenberg_block_bootstrap_formular2_register');
+        $this->loader->add_action('enqueue_block_editor_assets', $plugin_admin, 'bs_formular2_plugin_editor_block_scripts');
+
+        //TODO REGISTER ADMIN MAPS PAGE
+        $this->loader->add_action('admin_menu', $plugin_admin, 'register_bs_formular2_menu');
+    }
 
 	/**
 	 * Register all the hooks related to the public-facing functionality
@@ -391,6 +441,61 @@ class Bs_Formular2 {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 	}
+
+    /**
+     * Register all the DATABASE hooks
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function bs_formular2_database() {
+
+        global $bsFormular2Database;
+        $bsFormular2Database = new BS_Formular2_Database($this->get_db_version());
+        /**
+         * Create Database
+         * @since    1.0.0
+         */
+        $this->loader->add_action('init', $bsFormular2Database, 'update_create_bs_formular2_database');
+    }
+
+    /**
+     * Database Tables bs_formulare2|bs_formular2_settings|bs_formular2_message|bs_formular2_post_eingang
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function bs_formular2_database_hooks() {
+
+        /**
+         * Table bs_formular2_settings
+         * @since    1.0.0
+         */
+        global $bsFormularTableSettings;
+        $bsFormularTableSettings = new BS_Formular_Settings_Table($this->get_db_version(), $this->get_settings_id());
+
+        $this->loader->add_action('set_formular2_settings', $bsFormularTableSettings, 'set_bs_formular2_settings', 10,2);
+
+    }
+
+    /**
+     * Register Class BS-Formular2_Helper hooks
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function bs_formular2_helper() {
+        global $bs_formular2_helper;
+        $bs_formular2_helper = BS_Formular2_Helper::instance($this->get_plugin_name(), $this->get_version(), $this->get_db_version(),$this->main);
+
+        $this->loader->add_filter('bs_array_to_object', $bs_formular2_helper, 'bsFormular2ArrayToObject');
+        $this->loader->add_filter('bs_load_random_string',$bs_formular2_helper, 'bs_formular2_load_random_string');
+        $this->loader->add_filter('bs_generate_random_id', $bs_formular2_helper, 'getBSFormular2GenerateRandomId', 10, 4);
+        $this->loader->add_filter('bs_file_size_convert', $bs_formular2_helper, 'BsFormular2FileSizeConvert');
+    }
 
 	/**
 	 * Run the loader to execute all the hooks with WordPress.
@@ -421,6 +526,15 @@ class Bs_Formular2 {
      */
     public  function get_plugin_slug():string {
        return $this->plugin_slug;
+    }
+
+    /**
+     * Settings ID for Plugin.
+     * @return int
+     * @since    1.0.0
+     */
+    public function get_settings_id():int {
+      return $this->settings_id;
     }
 
 	/**

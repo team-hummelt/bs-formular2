@@ -58,7 +58,8 @@ class BS_Formular2_Options
      */
     public function bs_formular2_set_default_options()
     {
-        $emailDef = $this->bsFormular2ArrayToObject($this->default['email_settings']);
+        global $bs_formular2_helper;
+        $emailDef = $bs_formular2_helper->bsFormular2ArrayToObject($this->default['email_settings']);
         $options = get_option('bs_formular2_options');
         $defaults = [
             'email_empfang_aktiv' => $emailDef->email_empfang_aktiv,
@@ -76,15 +77,22 @@ class BS_Formular2_Options
     }
 
     /**
-     * @param $array
-     * @since 1.0.0
-     * @return object
+     * @param string $method
+     * @param string $settings
+     * @param int|null $id
      */
-    final public function bsFormular2ArrayToObject($array): object
-    {
-        foreach ($array as $key => $value)
-            if (is_array($value)) $array[$key] = self::bsFormular2ArrayToObject($value);
-        return (object)$array;
-    }
+    final public function func_get_bs_form2_default_settings(string $method, string $settings, int $id = NULL) {
 
+        $defaultSettings = $this->get_theme_default_settings();
+        switch ($method) {
+            case 'set':
+                switch ($settings) {
+                    case 'message':
+
+
+                        break;
+                }
+                break;
+        }
+    }
 }
