@@ -1,6 +1,6 @@
 <?php
 
-namespace Hupa\BsPluginLicense;
+namespace Hupa\BsFormular2License;
 
 use stdClass;
 
@@ -17,55 +17,88 @@ class Hupa_Server_WP_Remote_Handle
     private static $instance;
 
     /**
+     * The current Plugin Basename.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string $basename The Plugin Basename.
+     */
+    protected string $basename;
+
+    /**
+     * The plugin License Options.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      array  $options    plugin License Options.
+     */
+    private array $options;
+
+    /**
+     * The current version of the Plugin-Version.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string $version The current version of the database Version.
+     */
+    protected string $version;
+
+    /**
      * Hupa_Server_WP_Remote_Handle Instance
      * @return static
      * @since 1.0.0
      */
-    public static function instance(): self
+    public static function instance(string $basename, string $version): self
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self;
+            self::$instance = new self($basename, $version);
         }
         return self::$instance;
     }
 
-    public function __construct(){}
 
-    public function wp_loaded_bs_formular2_remote() {
-        //TODO Endpoints URL's
-        add_filter('get_bs_formular_api_urls', array($this, 'BsFormularGetApiUrl'));
-        //TODO JOB POST Resources Endpoints
-        add_filter('bs_formular_scope_resource', array($this, 'bsFormularPOSTApiResource'), 10, 2);
-
-        add_filter('hupa_api_scope_resource', array($this, 'bsServerPOSTApiResource'), 10, 2);
-        //TODO JOB GET Resources Endpoints
-        add_filter('get_scope_resource', array($this, 'BsFormularGETApiResource'), 10, 2);
-        //TODO JOB VALIDATE SOURCE BY Authorization Code
-        add_filter('get_bs_formular_resource_authorization_code', array($this, 'BsFormularInstallByAuthorizationCode'));
-        //TODO JOB SERVER URL ÄNDERN FALLS NÖTIG
-        add_filter('bs_formular_update_server_url', array($this, 'BsFormularUpdateServerUrl'));
+    /**
+     * @param string $basename
+     * @param string $version
+     */
+    public function __construct(string $basename, string $version){
+        $this->basename = $basename;
+        $this->version = $version;
+        $this->options = get_option($this->basename . '_server_api');
     }
 
-    public function BsFormularUpdateServerUrl($url)
+    public function wp_loaded_wp_remote() {
+        //TODO Endpoints URL's
+        add_filter($this->basename . '/api_urls', array($this, 'GetApiUrl'));
+        //TODO JOB POST Resources Endpoints
+        add_filter($this->basename . '/scope_resource', array($this, 'POSTApiResource'), 10, 2);
+        //TODO JOB GET Resources Endpoints
+        add_filter($this->basename . '/get_scope_resource', array($this, 'GETApiResource'), 10, 2);
+        //TODO JOB VALIDATE SOURCE BY Authorization Code
+        add_filter($this->basename .' /get_resource_authorization_code', array($this, 'InstallByAuthorizationCode'));
+        //TODO JOB SERVER URL ÄNDERN FALLS NÖTIG
+        add_filter($this->basename . '/update_server_url', array($this, 'UpdateServerUrl'));
+    }
+
+    public function UpdateServerUrl($url)
     {
         update_option('hupa_server_url', $url);
     }
 
-    public function BsFormularGetApiUrl($scope): string
+    public function GetApiUrl($scope): string
     {
-        $client_id = get_option('bs_formular_client_id');
         return match ($scope) {
-            'authorize_url' => get_option('hupa_server_url') . 'authorize?response_type=code&client_id=' . $client_id,
+            'authorize_url' => get_option('hupa_server_url') . 'authorize?response_type=code&client_id=' . $this->options['client_id'],
             default => '',
         };
     }
 
-    public function BsFormularInstallByAuthorizationCode($authorization_code): object
+    public function InstallByAuthorizationCode($authorization_code): object
     {
         $error = new stdClass();
         $error->status = false;
-        $client_id = get_option('bs_formular_client_id');
-        $client_secret = get_option('bs_formular_client_secret');
+        $client_id = $this->options['client_id'];
+        $client_secret = $this->options['client_secret'];
         $token_url = get_option('hupa_server_url') . 'token';
         $authorization = base64_encode("$client_id:$client_secret");
 
@@ -91,18 +124,19 @@ class Hupa_Server_WP_Remote_Handle
             $apiData->status = false;
             return $apiData;
         }
-
-        update_option('bs_formular_access_token', $apiData->access_token);
+        
+        $access_token =  $this->options['access_token'] = $apiData->access_token;
+        update_option($this->options, $access_token);
         $body = [
-            'version' => BS_FORMULAR_PLUGIN_VERSION,
+            'version' => $this->version,
         ];
 
-        return $this->bsFormularPOSTApiResource('install', $body);
+        return $this->POSTApiResource('install', $body);
     }
 
-    public function bsFormularPOSTApiResource($scope, $body = false)
+    public function POSTApiResource($scope, $body = false)
     {
-        $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->BsFormularApiPostArgs($body));
+        $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->ApiPostArgs($body));
         if (is_wp_error($response)) {
             return $response->get_error_message();
         }
@@ -110,9 +144,9 @@ class Hupa_Server_WP_Remote_Handle
             $query = json_decode($response['body']);
             if (isset($query->error)) {
                 if ($this->get_error_message($query)) {
-                    $this->BsFormularGetApiClientCredentials();
+                    $this->GetApiClientCredentials();
                 }
-                $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->BsFormularApiPostArgs($body));
+                $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->ApiPostArgs($body));
                 if (is_array($response)) {
                     return json_decode($response['body']);
                 }
@@ -123,9 +157,9 @@ class Hupa_Server_WP_Remote_Handle
         return false;
     }
 
-    public function BsFormularApiPostArgs($body = []): array
+    public function ApiPostArgs($body = []): array
     {
-        $bearerToken = get_option('bs_formular_access_token');
+        $bearerToken = $this->options['access_token'];
         return [
             'method' => 'POST',
             'timeout' => 45,
@@ -157,11 +191,11 @@ class Hupa_Server_WP_Remote_Handle
         return $return;
     }
 
-    private function BsFormularGetApiClientCredentials(): void
+    private function GetApiClientCredentials(): void
     {
         $token_url = get_option('hupa_server_url') . 'token';
-        $client_id = get_option('bs_formular_client_id');
-        $client_secret = get_option('bs_formular_client_secret');
+        $client_id = $this->options['client_id'];
+        $client_secret = $this->options['client_secret'];
         $authorization = base64_encode("$client_id:$client_secret");
         $error = new stdClass();
         $error->status = false;
@@ -183,13 +217,14 @@ class Hupa_Server_WP_Remote_Handle
         $response = wp_remote_post($token_url, $args);
         if (!is_wp_error($response)) {
             $apiData = json_decode($response['body']);
-            update_option('bs_formular_access_token', $apiData->access_token);
+            $access_token =  $this->options['access_token'] = $apiData->access_token;
+            update_option($this->options, $access_token);
         }
     }
 
     public function bsServerPOSTApiResource($scope, $body = false)
     {
-        $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->BsFormularApiPostArgs($body));
+        $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->ApiPostArgs($body));
         if (is_wp_error($response)) {
             return $response->get_error_message();
         }
@@ -197,9 +232,9 @@ class Hupa_Server_WP_Remote_Handle
             $query = json_decode($response['body']);
             if (isset($query->error)) {
                 if ($this->get_error_message($query)) {
-                    $this->BsFormularGetApiClientCredentials();
+                    $this->GetApiClientCredentials();
                 }
-                $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->BsFormularApiPostArgs($body));
+                $response = wp_remote_post(get_option('hupa_server_url') . $scope, $this->ApiPostArgs($body));
                 if (is_array($response)) {
                     return $response['body'];
                 }
@@ -210,9 +245,9 @@ class Hupa_Server_WP_Remote_Handle
         return false;
     }
 
-    public function BsFormularGETApiResource($scope, $body = false)
+    public function GETApiResource($scope, $body = false)
     {
-        $response = wp_remote_get(get_option('hupa_server_url') . $scope, $this->BsFormularGETApiArgs($body));
+        $response = wp_remote_get(get_option('hupa_server_url') . $scope, $this->GETApiArgs($body));
         if (is_wp_error($response)) {
             return $response->get_error_message();
         }
@@ -220,9 +255,9 @@ class Hupa_Server_WP_Remote_Handle
             $query = json_decode($response['body']);
             if (isset($query->error)) {
                 if ($this->get_error_message($query)) {
-                    $this->BsFormularGetApiClientCredentials();
+                    $this->GetApiClientCredentials();
                 }
-                $response = wp_remote_get(get_option('hupa_server_url') . $scope, $this->BsFormularGETApiArgs($body));
+                $response = wp_remote_get(get_option('hupa_server_url') . $scope, $this->GETApiArgs($body));
                 if (is_array($response)) {
                     return json_decode($response['body']);
                 }
@@ -233,9 +268,9 @@ class Hupa_Server_WP_Remote_Handle
         return false;
     }
 
-    private function BsFormularGETApiArgs($body = []): array
+    private function GETApiArgs($body = []): array
     {
-        $bearerToken = get_option('bs_formular_access_token');
+        $bearerToken = $this->options['access_token'];
         return [
             'method' => 'GET',
             'timeout' => 45,
@@ -251,7 +286,7 @@ class Hupa_Server_WP_Remote_Handle
         ];
     }
 
-    public function BSFormApiDownloadFile($url, $body = [])
+    public function ApiDownloadFile($url, $body = [])
     {
 
         $bearerToken = get_option('bs_formular_access_token');
@@ -272,7 +307,7 @@ class Hupa_Server_WP_Remote_Handle
         $response = wp_remote_post($url, $args);
 
         if (is_wp_error($response)) {
-            $this->BsFormularGetApiClientCredentials();
+            $this->GetApiClientCredentials();
         }
 
         $response = wp_remote_post($url, $args);

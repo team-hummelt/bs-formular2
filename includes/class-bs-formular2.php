@@ -32,9 +32,9 @@
 use BS\Formular2\Bs_Formular2_Public;
 use BS\Formular2\Bs_Formular2_Admin;
 use BS\Formular2\BS_Formular2_Options;
-use Hupa\FormLicense\Bs_Formular2_Register;
-use BSFormularAPIExec\EXEC\BS_Formular2_License_Exec_Api;
-use Hupa\BsPluginLicense\Hupa_Server_WP_Remote_Handle;
+use BSFormular2\License\Hupa_License_Register;
+use BSFormular2APIExec\EXEC\Hupa_License_Exec_Api;
+use Hupa\BsFormular2License\Hupa_Server_WP_Remote_Handle;
 use JetBrains\PhpStorm\NoReturn;
 
 class Bs_Formular2 {
@@ -109,6 +109,15 @@ class Bs_Formular2 {
      */
     protected $options;
 
+    /**
+     * The plugin Slug Path.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $plugin_slug    plugin Slug Path.
+     */
+    protected string $plugin_slug;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -119,19 +128,20 @@ class Bs_Formular2 {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'BS_FORMULAR_PLUGIN_VERSION' ) ) {
-			$this->version = BS_FORMULAR_PLUGIN_VERSION;
+		if ( defined( 'BS_FORMULAR2_PLUGIN_VERSION' ) ) {
+			$this->version = BS_FORMULAR2_PLUGIN_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
 
-        if ( defined( 'BS_FORMULAR_PLUGIN_DB_VERSION' ) ) {
-            $this->db_version = BS_FORMULAR_PLUGIN_DB_VERSION;
+        if ( defined( 'BS_FORMULAR2_PLUGIN_DB_VERSION' ) ) {
+            $this->db_version = BS_FORMULAR2_PLUGIN_DB_VERSION;
         } else {
             $this->db_version = '1.0.0';
         }
 
-		$this->plugin_name = 'bs-formular2';
+		$this->plugin_name = BS_FORMULAR2_BASENAME;
+        $this->plugin_slug = BS_FORMULAR2_SLUG_PATH;
         $this->main = $this;
 
         //Check PHP AND WordPress Version
@@ -145,11 +155,11 @@ class Bs_Formular2 {
         // Set Settings Default-Optionen AND Helper Functions
         $this->bs_formular2_options();
 
-        if (get_option('bs_formular_product_install_authorize')) {
+        $options = get_option($this->plugin_name . '_server_api');
+        if ($options['product_install_authorize']) {
             $this->define_admin_hooks();
             $this->define_public_hooks();
         }
-
 	}
 
 	/**
@@ -241,7 +251,7 @@ class Bs_Formular2 {
     private function check_dependencies(): void
     {
         global $wp_version;
-        if (version_compare(PHP_VERSION, BS_FORMULAR_MIN_PHP_VERSION, '<') || $wp_version < BS_FORMULAR_MIN_WP_VERSION) {
+        if (version_compare(PHP_VERSION, BS_FORMULAR2_MIN_PHP_VERSION, '<') || $wp_version < BS_FORMULAR2_MIN_WP_VERSION) {
             $this->maybe_self_deactivate();
         }
     }
@@ -256,7 +266,7 @@ class Bs_Formular2 {
     private function maybe_self_deactivate(): void
     {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        deactivate_plugins(BS_FORMULAR_SLUG_PATH);
+        deactivate_plugins($this->plugin_slug);
         add_action('admin_notices', array($this, 'self_deactivate_notice'));
     }
 
@@ -269,7 +279,7 @@ class Bs_Formular2 {
      */
     #[NoReturn] public function self_deactivate_notice(): void
     {
-        echo sprintf('<div class="error" style="margin-top:5rem"><p>' . __('This plugin has been disabled because it requires a PHP version greater than %s and a WordPress version greater than %s. Your PHP version can be updated by your hosting provider.', 'hupa-api-editor') . '</p></div>', BS_FORMULAR_MIN_PHP_VERSION, BS_FORMULAR_MIN_WP_VERSION);
+        echo sprintf('<div class="error" style="margin-top:5rem"><p>' . __('This plugin has been disabled because it requires a PHP version greater than %s and a WordPress version greater than %s. Your PHP version can be updated by your hosting provider.', 'hupa-api-editor') . '</p></div>', BS_FORMULAR2_MIN_PHP_VERSION, BS_FORMULAR2_MIN_WP_VERSION);
         exit();
     }
 
@@ -298,34 +308,35 @@ class Bs_Formular2 {
      */
     private function register_bs_formular2_license() {
 
-        $this->license = Bs_Formular2_Register::instance();
 
+        $this->license = Hupa_License_Register::instance($this->get_plugin_name(), $this->get_version());
         /** Register License Admin Menu
          * @since    1.0.0
          */
         // TODO REGISTER LICENSE MENU
+
         if(!get_option('bs_formular_product_install_authorize')) {
-            $this->loader->add_action('admin_menu',$this->license, 'register_license_bs_formular2_plugin');
+            $this->loader->add_action('admin_menu',$this->license, 'register_hupa_license_menu');
         }
 
         $this->loader->add_action('wp_ajax_BsFormularLicenceHandle', $this->license, 'prefix_ajax_BsFormularLicenceHandle');
-        $this->loader->add_action( 'init', $this->license, 'bs_formular_license_site_trigger_check' );
-        $this->loader->add_action( 'template_redirect',$this->license, 'bs_formular_license_callback_trigger_check');
+        $this->loader->add_action( 'init', $this->license, 'hupa_license_site_trigger_check' );
+        $this->loader->add_action( 'template_redirect',$this->license, 'hupa_license_callback_trigger_check');
 
         /** Register License API EXEC CLASS
          * @since    1.0.0
          */
-        global $bs_formular2_license_exec;
-        $bs_formular2_license_exec = BS_Formular2_License_Exec_Api::instance($this->get_db_version(), $this->get_version());
+        global $hupa_license_exec;
+        $hupa_license_exec = Hupa_License_Exec_Api::instance($this->get_db_version(), $this->get_version(), $this->get_plugin_name(), $this->get_plugin_slug());
 
         /** Register License API WP-REMOTE CLASS
          * @since    1.0.0
          */
-        global $bs_formular2_license_wp_remote;
-        $bs_formular2_license_wp_remote = Hupa_Server_WP_Remote_Handle::instance();
-        $this->remote = $bs_formular2_license_wp_remote;
+        global $hupa_license_wp_remote;
+        $hupa_license_wp_remote = Hupa_Server_WP_Remote_Handle::instance($this->get_plugin_name(), $this->get_version());
+        $this->remote = $hupa_license_wp_remote;
 
-        $this->loader->add_action('plugin_loaded', $this->remote, 'wp_loaded_bs_formular2_remote');
+        $this->loader->add_action('plugin_loaded', $this->remote, 'wp_loaded_wp_remote');
 
     }
 
@@ -399,6 +410,16 @@ class Bs_Formular2 {
     {
 		return $this->plugin_name;
 	}
+
+    /**
+     * The SLUG of the plugin used to uniquely identify it within the context of
+     *
+     * @since     1.0.0
+     * @return    string    The SLUG of the plugin.
+     */
+    public  function get_plugin_slug():string {
+       return $this->plugin_slug;
+    }
 
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.

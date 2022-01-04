@@ -12,11 +12,11 @@ if (sendLicense) {
 function send_xhr_license_data(data) {
     let xhr = new XMLHttpRequest();
     let formData = new FormData();
-    xhr.open('POST', bs_formulare_license_obj.ajax_url, true);
+    xhr.open('POST', bs_formular2_license_obj .ajax_url, true);
     let input = new FormData(data);
     for (let [name, value] of input) formData.append(name, value);
 
-    formData.append('_ajax_nonce', bs_formulare_license_obj.nonce);
+    formData.append('_ajax_nonce', bs_formular2_license_obj .nonce);
     formData.append('action', 'BsFormularLicenceHandle');
     xhr.send(formData);
     //Response
@@ -26,7 +26,7 @@ function send_xhr_license_data(data) {
             if (data.status) {
                 if(!data.if_authorize){
                     licenseAlert.classList.add('d-none');
-                    theme_aktivieren_button(data.send_url);
+                    license_aktivieren_button(data.send_url);
                 }
             } else {
                 licenseAlert.classList.remove('d-none');
@@ -36,12 +36,12 @@ function send_xhr_license_data(data) {
     }
 }
 
-function theme_aktivieren_button(url) {
+function license_aktivieren_button(url) {
     if (!url) {
         return false;
     }
     let html = `<a href="${url}" id="" type="button" class="btn btn-success">
-            <i class="bi bi-box-arrow-right"></i>&nbsp;Plugin aktivieren
+            <i class="bi bi-box-arrow-right"></i>&nbsp; Plugin aktivieren
             </a>`;
 
     let saveBtn = document.getElementById('saveBtn');

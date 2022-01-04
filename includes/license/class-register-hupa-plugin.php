@@ -1,6 +1,6 @@
 <?php
 
-namespace Hupa\FormLicense;
+namespace BSFormular2\License;
 
 defined('ABSPATH') or die();
 
@@ -10,22 +10,67 @@ defined('ABSPATH') or die();
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
-final class Bs_Formular2_Register
+final class Hupa_License_Register
 {
     private static $instance;
 
+
     /**
+     * The current Plugin Basename.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string $basename The Plugin Basename.
+     */
+    protected string $basename;
+
+    /**
+     * The current version off the Plugin-Version.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string $version The current version off the Plugin-Version.
+     */
+    protected string $version;
+
+    /**
+     * @param string $basename
+     * @param string $version
      * @return static
      */
-    public static function instance(): self
+    public static function instance(string $basename, string $version): self
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self();
+            self::$instance = new self($basename, $version);
         }
         return self::$instance;
     }
 
-    public function __construct(){}
+    /**
+     * @param string $basename
+     * @param string $version
+     */
+    public function __construct(string $basename, string $version){
+        $this->basename = $basename;
+        $this->version = $version;
+
+        if(!get_option($this->basename . '_server_api')){
+            $serverApi = [
+                'update_aktiv' => true,
+                'update_type' =>  1,
+                'update_url' => 'https://github.com/team-hummelt/'. $this->basename,
+                'product_install_authorize' => '',
+                'client_id' => '',
+                'client_secret' => '',
+                'license_message' => '',
+                'access_token' => '',
+                'install_time' => '',
+                'license_url' => '',
+            ];
+            update_option($this->basename . '_server_api', $serverApi);
+
+        }
+    }
 
     /**
      * ==================================================
@@ -33,23 +78,23 @@ final class Bs_Formular2_Register
      * ==================================================
      */
 
-    public function register_license_bs_formular2_plugin(): void
+    public function register_hupa_license_menu(): void
     {
         $hook_suffix = add_menu_page(
             __('BS-Formular', 'bs-formular2'),
             __('BS-Formular', 'bs-formular2'),
             'manage_options',
-            'bs-formular-license',
-            array($this, 'bs_formular_license'),
+            $this->basename . '-license',
+            array($this, 'hupa_license_page'),
             'dashicons-lock', 2
         );
-        add_action('load-' . $hook_suffix, array($this, 'bs_formular_load_ajax_admin_options_script'));
+        add_action('load-' . $hook_suffix, array($this, 'hupa_license_load_ajax_admin_options_script'));
     }
 
 
-    public function bs_formular_license(): void
+    public function hupa_license_page(): void
     {
-        require 'activate-bs-formular-page.php';
+        require 'activate-hupa-license-page.php';
     }
 
 
@@ -59,15 +104,17 @@ final class Bs_Formular2_Register
      * =========================================
      */
 
-    public function bs_formular_load_ajax_admin_options_script(): void
+    public function hupa_license_load_ajax_admin_options_script(): void
     {
-        add_action('admin_enqueue_scripts', array($this, 'load_bs_formular_admin_style'));
-        $title_nonce = wp_create_nonce('bs_formular_license_handle');
-        wp_register_script('bs-formular-selector-ajax-script', '', [], '', true);
-        wp_enqueue_script('bs-formular-selector-ajax-script');
-        wp_localize_script('bs-formular-selector-ajax-script', 'bs_formulare_license_obj', array(
+        $baseName = str_replace(['-', ' '], '_', $this->basename);
+        add_action('admin_enqueue_scripts', array($this, 'load_hupa_license_admin_style'));
+        $title_nonce = wp_create_nonce($baseName . '_license_handle');
+        wp_register_script($baseName . '-selector-ajax-script', '', [], '', true);
+        wp_enqueue_script($baseName . '-selector-ajax-script');
+        wp_localize_script($baseName . '-selector-ajax-script', $baseName . '_license_obj', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => $title_nonce
+            'nonce' => $title_nonce,
+            'base'=> $baseName
         ));
     }
 
@@ -78,9 +125,10 @@ final class Bs_Formular2_Register
      */
 
     public function prefix_ajax_BsFormularLicenceHandle(): void {
+        $baseName = str_replace(['-', ' '], '_', $this->basename);
         $responseJson = null;
-        check_ajax_referer( 'bs_formular_license_handle' );
-        require 'bs-formular-license-ajax.php';
+        check_ajax_referer( $baseName. '_license_handle' );
+        require 'hupa-license-ajax.php';
         wp_send_json( $responseJson );
     }
 
@@ -88,13 +136,13 @@ final class Bs_Formular2_Register
        TODO GENERATE CUSTOM SITES
     =================================================
     */
-    public function bs_formular_license_site_trigger_check(): void {
+    public function hupa_license_site_trigger_check(): void {
         global $wp;
-        $wp->add_query_var( BS_FORMULAR_BASENAME );
+        $wp->add_query_var( $this->basename );
     }
 
-    function bs_formular_license_callback_trigger_check(): void {
-       if ( get_query_var( BS_FORMULAR_BASENAME ) === BS_FORMULAR_BASENAME) {
+    function hupa_license_callback_trigger_check(): void {
+       if ( get_query_var( $this->basename ) === $this->basename) {
             require 'api-request-page.php';
             exit;
         }
@@ -106,9 +154,9 @@ final class Bs_Formular2_Register
      * ====================================================
      */
 
-    public function load_bs_formular_admin_style(): void
+    public function load_hupa_license_admin_style(): void
     {
-        wp_enqueue_style('bs-formular-license-style',plugins_url('bs-formular') . '/inc/license/assets/license-backend.css', array(), '');
-        wp_enqueue_script('js-bs-formular-license', plugins_url('bs-formular') . '/inc/license/license-script.js', array(), '', true );
+        wp_enqueue_style($this->basename . '-license-style',plugins_url('bs-formular') . '/inc/license/assets/license-backend.css', array(), '');
+        wp_enqueue_script($this->basename . '-license-script', plugins_url('bs-formular') . '/inc/license/license-script.js', array(), '', true );
     }
 }

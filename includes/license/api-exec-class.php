@@ -1,11 +1,11 @@
 <?php
 
-namespace BSFormularAPIExec\EXEC;
+namespace BSFormular2APIExec\EXEC;
 
 defined('ABSPATH') or die();
 
 use stdClass;
-use Hupa\BsPluginLicense\Hupa_Server_WP_Remote_Handle;
+use Hupa\BsFormular2License\Hupa_Server_WP_Remote_Handle;
 
 if (!function_exists('get_plugins')) {
     require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -16,17 +16,24 @@ if (!function_exists('is_user_logged_in')) {
 }
 
 /**
- * REGISTER HUPA CUSTOM THEME
+ * REGISTER HUPA PLUGIN|THEME
  * @package Hummelt & Partner WordPress Theme
  * Copyright 2021, Jens Wiecker
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
-final class BS_Formular2_License_Exec_Api
+final class Hupa_License_Exec_Api
 {
+
+    /**
+     * Instance off Hupa_License_Exec_Api.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
     private static $instance;
 
     /**
-     * The current version of the DB-Version.
+     * The current version off the DB-Version.
      *
      * @since    1.0.0
      * @access   protected
@@ -35,14 +42,50 @@ final class BS_Formular2_License_Exec_Api
     protected string $dbVersion;
 
     /**
-     * The current version of the Plugin-Version.
+     * The current version off the Plugin-Version.
      *
      * @since    1.0.0
      * @access   protected
-     * @var      string $version The current version of the database Version.
+     * @var      string $version The current version off the Plugin-Version.
      */
     protected string $version;
 
+    /**
+     * The BASENAME off this plugin.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $basename    The BASENAME off this plugin.
+     */
+    protected string $basename;
+
+    /**
+     * The plugin Slug Path.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $plugin_slug  plugin Slug Path.
+     */
+    protected string $plugin_slug;
+
+
+    /**
+     * The plugin dir.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $plugin_dir    plugin dir Path.
+     */
+    protected string $plugin_dir;
+
+    /**
+     * The plugin License Options ($this->basename . '_server_api') .
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      array  $options   plugin License Options.
+     */
+    protected array $options;
 
     /**
      * WP-REMOTE Server API.
@@ -56,12 +99,14 @@ final class BS_Formular2_License_Exec_Api
     /**
      * @param string $dbVersion
      * @param string $version
+     * @param string $plugin_name
+     * @param string $plugin_slug
      * @return static
      */
-    public static function instance(string $dbVersion, string $version): self
+    public static function instance(string $dbVersion, string $version, string $plugin_name, string $plugin_slug): self
     {
         if (is_null(self::$instance)) {
-            self::$instance = new self($dbVersion, $version);
+            self::$instance = new self($dbVersion, $version, $plugin_name, $plugin_slug);
         }
         return self::$instance;
     }
@@ -69,28 +114,25 @@ final class BS_Formular2_License_Exec_Api
     /**
      * @param string $db_version
      * @param string $version
+     * @param string $plugin_name
+     * @param string $plugin_slug
      */
-    public function __construct(string $db_version, string $version)
+    public function __construct(string $db_version, string $version, string $plugin_name, string $plugin_slug)
     {
 
-        $this->api = Hupa_Server_WP_Remote_Handle::instance();
         $this->dbVersion = $db_version;
         $this->version = $version;
+        $this->basename = $plugin_name;
+        $this->plugin_slug = $plugin_slug;
+        $this->plugin_dir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename;
+        $this->options = get_option($this->basename . '_server_api');
+        $this->api = Hupa_Server_WP_Remote_Handle::instance($this->basename, $this->version);
 
 
         if (is_user_logged_in() && is_admin()) {
-            if (site_url() !== get_option('bs_formular_license_url')) {
-                $msg = 'Version: ' . $this->version . ' ungültige Lizenz URL: ' . get_option('bs_formular_license_url');
+            if (site_url() !== $this->options['license_url']) {
+                $msg = 'Version: ' . $this->version . ' ungültige Lizenz URL: ' . $this->options['license_url'];
                 $this->apiSystemLog('url_error', $msg);
-            }
-
-            if(!get_option('hupa_bs_formular_server_api')){
-                $serverApi = [
-                    'update_aktiv' => true,
-                    'update_type' =>  1,
-                    'update_url' => 'https://github.com/team-hummelt/'. BS_FORMULAR_BASENAME
-                ];
-                update_option('hupa_bs_formular_server_api', $serverApi);
             }
         }
     }
@@ -108,17 +150,20 @@ final class BS_Formular2_License_Exec_Api
         $getJob = $getJob->record;
         switch ($getJob->exec_id) {
             case '1':
-                update_option('bs_formular_license_url', site_url());
+                $update = $this->options['license_url'] = site_url();
+                update_option($this->options, $update);
                 $status = true;
                 $msg = 'Lizenz Url erfolgreich geändert.';
                 break;
             case '2':
-                update_option('bs_formular_client_id', $getJob->client_id);
+                $update = $this->options['client_id'] = $getJob->client_id;
+                update_option($this->options, $update);
                 $status = true;
                 $msg = 'Client ID erfolgreich geändert.';
                 break;
             case '3':
-                update_option('bs_formular_client_secret', $getJob->client_secret);
+                $update = $this->options['client_secret'] = $getJob->client_secret;
+                update_option($this->options, $update);
                 $status = true;
                 $msg = 'Client Secret erfolgreich geändert.';
                 break;
@@ -128,22 +173,28 @@ final class BS_Formular2_License_Exec_Api
                     'type' => 'aktivierungs_file'
                 ];
 
-                $datei = $this->api->BSFormApiDownloadFile(get_option('hupa_server_url').'download', $body);
+                $datei = $this->api->ApiDownloadFile(get_option('hupa_server_url').'download', $body);
                 if($datei){
-                    $file = BS_FORMULAR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
+                    $file = $this->plugin_dir . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
                     file_put_contents($file, $datei);
-                    $activate = activate_plugin( BS_FORMULAR_SLUG_PATH );
+                    $activate = activate_plugin( $this->plugin_slug );
                     if ( is_wp_error( $activate ) ) {
                         $status = false;
                         $msg = 'Plugin konnte nicht aktiviert werden.';
                     } else {
                         $status = true;
                         $msg = 'Plugin erfolgreich aktiviert.';
-                        update_option('bs_formular_client_id', $getJob->client_id);
-                        update_option('bs_formular_client_secret', $getJob->client_secret);
-                        update_option('bs_formular_license_url', site_url());
-                        update_option('bs_formular_product_install_authorize', true);
-                        delete_option('bs_formular_message');
+                        $client_id = $this->options['client_id'] = $getJob->client_id;
+                        update_option($this->options, $client_id);
+                        $client_secret = $this->options['client_secret'] = $getJob->client_secret;
+                        update_option($this->options, $client_secret);
+                        $license_url = $this->options['license_url'] = site_url();
+                        update_option($this->options, $license_url);
+                        $product_install_authorize = $this->options['product_install_authorize'] = true;
+                        update_option($this->options, $product_install_authorize);
+                        $license_message = $this->options['license_message'] = '';
+                        update_option($this->options, $license_message);
+
                     }
                 } else {
                     $status = false;
@@ -151,24 +202,30 @@ final class BS_Formular2_License_Exec_Api
                 }
                 break;
             case '5':
-                deactivate_plugins( BS_FORMULAR_SLUG_PATH );
-                set_transient('show_lizenz_info', true, 5);
-                delete_option('bs_formular_client_id');
-                delete_option('bs_formular_client_secret');
-                delete_option('bs_formular_license_url');
-                delete_option('bs_formular_product_install_authorize');
-                update_option('bs_formular_message', 'Das Plugin BS-Formular wurde deaktiviert. Wenden Sie sich an den Administrator.');
+                deactivate_plugins( $this->plugin_slug );
+                set_transient($this->basename . '_show_lizenz_info', true, 5);
+                $client_id = $this->options['client_id'] = '';
+                update_option($this->options, $client_id);
+                $client_secret = $this->options['client_secret'] = '';
+                update_option($this->options, $client_secret);
+                $license_url = $this->options['license_url'] = '';
+                update_option($this->options, $license_url);
+                $product_install_authorize = $this->options['product_install_authorize'] = false;
+                update_option($this->options, $product_install_authorize);
+                $license_message = $this->options['license_message'] = 'Das Plugin '.strtoupper($this->basename).' wurde deaktiviert. Wenden Sie sich an den Administrator.';
+                update_option($this->options, $license_message);
+
                 $status = true;
-                $msg = 'BS-Formular erfolgreich deaktiviert.';
+                $msg = strtoupper($this->basename) . ' erfolgreich deaktiviert.';
                 break;
             case '6':
                 $body = [
                     'version' => $this->version,
                     'type' => 'aktivierungs_file'
                 ];
-                $datei = $this->api->BSFormApiDownloadFile(get_option('hupa_server_url').'download', $body);
+                $datei = $this->api->ApiDownloadFile(get_option('hupa_server_url').'download', $body);
                 if($datei){
-                    $file = BS_FORMULAR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
+                    $file = $this->plugin_dir . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
                     file_put_contents($file, $datei);
                     $status = true;
                     $msg = 'Aktivierungs File erfolgreich kopiert.';
@@ -178,17 +235,24 @@ final class BS_Formular2_License_Exec_Api
                 }
                 break;
             case '7':
-                delete_option('bs_formular_client_id');
-                delete_option('bs_formular_client_secret');
-                delete_option('bs_formular_license_url');
-                delete_option('bs_formular_product_install_authorize');
-                update_option('bs_formular_message', 'Das Theme wurde deaktiviert. Wenden Sie sich an den Administrator.');
+                $client_id = $this->options['client_id'] = '';
+                update_option($this->options, $client_id);
+                $client_secret = $this->options['client_secret'] = '';
+                update_option($this->options, $client_secret);
+                $license_url = $this->options['license_url'] = '';
+                update_option($this->options, $license_url);
+                $product_install_authorize = $this->options['product_install_authorize'] = false;
+                update_option($this->options, $product_install_authorize);
+                $license_message = $this->options['license_message'] = 'Das Plugin ' . strtoupper($this->basename) . ' wurde deaktiviert. Wenden Sie sich an den Administrator.';
+                update_option($this->options, $license_message);
 
-                $file = BS_FORMULAR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $getJob->file_path;
-                unlink($file);
+                $file = $this->plugin_dir . DIRECTORY_SEPARATOR . $getJob->file_path;
+                $input = '';
+                file_put_contents($file, $input);
+                //unlink($file);
                 $status = true;
                 $msg = 'Aktivierungs File erfolgreich gelöscht.';
-                deactivate_plugins( BS_FORMULAR_SLUG_PATH );
+                deactivate_plugins( $this->plugin_slug );
                 break;
             case '8':
                 update_option('hupa_server_url', $getJob->server_url);
@@ -200,34 +264,34 @@ final class BS_Formular2_License_Exec_Api
                     'version' => $this->version,
                     'type' => 'update_version'
                 ];
-                apply_filters('post_scope_resource', $getJob->uri, $body);
+                apply_filters($this->basename . '/get_scope_resource', $getJob->uri, $body);
                 $status = true;
                 $msg = 'Version aktualisiert.';
                 break;
             case'10':
                 if($getJob->update_type == '1' || $getJob->update_type == '2'){
-                   $updateUrl =  apply_filters('bs_formular_scope_resource', 'hupa-update/url');
+                   $updateUrl =  apply_filters($this->basename . '/scope_resource', 'hupa-update/url');
                    $url = $updateUrl->url;
                    $update_aktiv = true;
                 } else {
                     $update_aktiv = false;
                     $url = '';
                 }
-                $serverApi = [
-                    'update_aktiv' => $update_aktiv,
-                    'update_type' => $getJob->update_type,
-                    'update_url' => $url
-                ];
 
-                update_option('hupa_bs_formular_server_api', $serverApi);
+                $update_aktiv = $this->options['update_aktiv'] = $update_aktiv;
+                update_option($this->options, $update_aktiv);
+                $update_type = $this->options['update_type'] = $getJob->update_type;
+                update_option($this->options, $update_type);
+                $update_url = $this->options['update_url'] = $url;
+                update_option($this->options, $update_url);
+
                 $status = true;
                 $msg = 'Update Methode aktualisiert.';
                 break;
             case'11':
-               $updateUrl = apply_filters('bs_formular_scope_resource', 'hupa-update/url');
-               $updOption = get_option('hupa_bs_formular_server_api');
-               $updOption['update_url'] = $updateUrl->url;
-               update_option('hupa_bs_formular_server_api', $updOption);
+               $updateUrl = apply_filters($this->basename . '/scope_resource', 'hupa-update/url');
+               $update_url = $this->options['update_url'] = $updateUrl->url;
+               update_option($this->options, $update_url);
 
                 $status = true;
                 $msg = 'URL Token aktualisiert.';
@@ -287,11 +351,11 @@ final class BS_Formular2_License_Exec_Api
         ];
 
 
-        $sendErr = $this->api->bsFormularPOSTApiResource('error-log', $body);
+        $sendErr = $this->api->POSTApiResource('error-log', $body);
     }
 
     public function get_post_scope_data($scope, $body = []) {
-      return $this->api->bsFormularPOSTApiResource($scope, $body);
+      return $this->api->POSTApiResource($scope, $body);
     }
 
 } //endClass

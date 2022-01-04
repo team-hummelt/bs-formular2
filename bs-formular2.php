@@ -63,24 +63,24 @@ if (is_plugin_active('bs-formular/bs-formular.php')) {
  * @since             1.0.0
  */
 $plugin_data = get_file_data(dirname(__FILE__) . '/bs-formular2.php', array('Version' => 'Version'), false);
-define("BS_FORMULAR_PLUGIN_VERSION", $plugin_data['Version']);
+define("BS_FORMULAR2_PLUGIN_VERSION", $plugin_data['Version']);
 /**
  * Currently DATABASE VERSION
  * @since             1.0.0
  */
-const BS_FORMULAR_PLUGIN_DB_VERSION = '1.0.0';
+const BS_FORMULAR2_PLUGIN_DB_VERSION = '1.0.0';
 
 /**
  * MIN PHP VERSION for Activate
  * @since             1.0.0
  */
-const BS_FORMULAR_MIN_PHP_VERSION = '8.0';
+const BS_FORMULAR2_MIN_PHP_VERSION = '8.0';
 
 /**
  * MIN WordPress VERSION for Activate
  * @since             1.0.0
  */
-const BS_FORMULAR_MIN_WP_VERSION = '5.7';
+const BS_FORMULAR2_MIN_WP_VERSION = '5.7';
 
 /**
  * SET Formular Default Message Option
@@ -100,43 +100,38 @@ const BS_FORMULAR_QUERY_URI = 1206711901102021;
  * Default Settings ID
  * @since             1.0.0
  */
-const BS_FORMULAR_SETTINGS_ID = 1;
+const BS_FORMULAR2_SETTINGS_ID = 1;
 
-/**
- * PLUGIN ROOT PATH
- * @since             1.0.0
- */
-define('BS_FORMULAR_PLUGIN_DIR', dirname(__FILE__));
 
 /**
  * PLUGIN SLUG
  * @since             1.0.0
  */
-define('BS_FORMULAR_SLUG_PATH', plugin_basename(__FILE__));
+define('BS_FORMULAR2_SLUG_PATH', plugin_basename(__FILE__));
 
 /**
  * PLUGIN ADMIN DIR
  * @since             1.0.0
  */
-define('BS_FORMULAR_PLUGIN_ADMIN_DIR', dirname(__FILE__). DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR);
+define('BS_FORMULAR2_PLUGIN_ADMIN_DIR', dirname(__FILE__). DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR);
 
 /**
  * PLUGIN BASENAME
  * @since             1.0.0
  */
-define('BS_FORMULAR_BASENAME', plugin_basename(__DIR__));
+define('BS_FORMULAR2_BASENAME', plugin_basename(__DIR__));
 
 
 //PLUGIN INC DIR
-const BS_FORMULAR_INC = BS_FORMULAR_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR;
+define("BS_FORMULAR2_INC", WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . plugin_basename(__DIR__) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR);
 // E-MAIL TEMPLATE FOLDER
-const EMAIL_TEMPLATES_DIR = BS_FORMULAR_INC . 'templates' . DIRECTORY_SEPARATOR;
+const EMAIL_TEMPLATES_DIR = BS_FORMULAR2_INC . 'templates' . DIRECTORY_SEPARATOR;
 
 //PLUGIN ASSETS URL
 define('BS_FORMULAR_PLUGIN_ASSETS_URL', plugins_url('bs-formular') . '/assets/public/');
 
 //PLUGIN GUTENBERG DATA PATH
-const BS_FORMULAR_GUTENBERG_DATA = BS_FORMULAR_INC . 'gutenberg' . DIRECTORY_SEPARATOR . 'plugin-data' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
+const BS_FORMULAR_GUTENBERG_DATA = BS_FORMULAR2_INC . 'gutenberg' . DIRECTORY_SEPARATOR . 'plugin-data' . DIRECTORY_SEPARATOR . 'build' . DIRECTORY_SEPARATOR;
 //PLUGIN GUTENBERG DATA URL
 define('BS_FORMULAR_GUTENBERG_URL', plugins_url('bs-formular') . '/inc/gutenberg/plugin-data/build/');
 
@@ -188,7 +183,7 @@ if ( is_admin() ) {
             $bsFormular2UpdateChecker = Puc_v4_Factory::buildUpdateChecker(
                 get_option( 'hupa_bs_formular_server_api' )['update_url'],
                 __FILE__,
-                BS_FORMULAR_BASENAME
+                BS_FORMULAR2_BASENAME
             );
             if ( get_option( 'hupa_bs_formular_server_api' )['update_type'] == '1' ) {
                 $bsFormular2UpdateChecker->getVcsApi()->enableReleaseAssets();
@@ -199,7 +194,7 @@ if ( is_admin() ) {
     /**
      * add plugin upgrade notification
      */
-    add_action( 'in_plugin_update_message-' . BS_FORMULAR_SLUG_PATH . '/' . BS_FORMULAR_SLUG_PATH .'.php', 'bs_formular2_show_upgrade_notification', 10, 2 );
+    add_action( 'in_plugin_update_message-' . BS_FORMULAR2_SLUG_PATH . '/' . BS_FORMULAR2_SLUG_PATH .'.php', 'bs_formular2_show_upgrade_notification', 10, 2 );
     function bs_formular2_show_upgrade_notification( $current_plugin_metadata, $new_plugin_metadata ) {
 
         /**

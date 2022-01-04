@@ -8,12 +8,15 @@ defined('ABSPATH') or die();
  * License: Commercial - goto https://www.hummelt-werbeagentur.de/
  */
 
-global $bs_formular2_license_exec;
+global $hupa_license_exec;
 $data = json_decode(file_get_contents("php://input"));
 
+$options = get_option($this->basename . '_server_api');
+
+if(isset($data)):
 if($data->make_id == 'make_exec'){
-    global $bs_formular2_license_exec;
-    $makeJob = $bs_formular2_license_exec->make_api_exec_job($data);
+    global $hupa_license_exec;
+    $makeJob = $hupa_license_exec->make_api_exec_job($data);
     $backMsg =  [
         'msg' => $makeJob->msg,
         'status' => $makeJob->status,
@@ -22,7 +25,7 @@ if($data->make_id == 'make_exec'){
     exit();
 }
 
-if($data->client_id !== get_option('bs_formular_client_id')){
+if($data->client_id !== $options['client_id']){
     $backMsg =  [
         'reply' => 'ERROR',
         'status' => false,
@@ -30,28 +33,12 @@ if($data->client_id !== get_option('bs_formular_client_id')){
     echo json_encode($backMsg)."<br><br>";
     exit('ERROR');
 }
-require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
 switch ($data->make_id) {
-
-    case '1':
-        $message = json_decode($data->message);
-        $backMsg =  [
-            'client_id' => get_option('bs_formular_client_id'),
-            'reply' => 'Plugin deaktiviert',
-            'status' => true,
-        ];
-
-        update_option('bs_formular_message',$message->msg);
-        delete_option('bs_formular_product_install_authorize');
-        delete_option('bs_formular_client_id');
-        delete_option('bs_formular_client_secret');
-	    deactivate_plugins( BS_FORMULAR_SLUG_PATH );
-	    set_transient('show_lizenz_info', true, 5);
-        break;
     case'send_versions':
         $backMsg = [
             'status' => true,
-            'theme_version' => 'v'.BS_FORMULAR_PLUGIN_VERSION,
+            'theme_version' => 'v'.$this->version,
         ];
         break;
     default:
@@ -64,3 +51,4 @@ $response = new stdClass();
 if($data) {
     echo json_encode($backMsg);
 }
+endif;

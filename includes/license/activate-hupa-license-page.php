@@ -13,16 +13,20 @@ $errMsg = '';
 $aktivShow = 'd-none';
 $registerShow = '';
 $file = '';
+$options = get_option($this->basename . '_server_api');
 if ($code) {
-    $response = apply_filters('get_bs_formular_resource_authorization_code', $code);
+    $response = apply_filters($this->basename . '/get_resource_authorization_code', $code);
     if ($response->status) {
         if ($response->if_file) {
-            $file = BS_FORMULAR_PLUGIN_DIR . DIRECTORY_SEPARATOR . $response->aktivierung_path;
+            $file = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR . $response->aktivierung_path;
             file_put_contents($file, $response->install_datei);
         }
-        update_option('bs_formular_install_time', current_time('mysql'));
-        update_option('bs_formular_product_install_authorize', true);
-        delete_option('bs_formular_message');
+        $install_time = $options['install_time'] = current_time('mysql');
+        update_option($options, $install_time);
+        $product_install_authorize = $options['product_install_authorize'] = true;
+        update_option($options, $product_install_authorize);
+        $license_message = $options['license_message'] = '';
+        update_option($options, $license_message);
     } else {
         $errMsg = 'Plugin konnte nicht aktiviert werden!';
     }
@@ -36,10 +40,10 @@ $reloadUrl=admin_url();
     <div class="container">
         <div class="card card-license">
             <div class="card-body shadow-license-box">
-                <h5 class="card-title"><i class="wp-blue bi bi-exclude"></i>&nbsp;Plugin BS-Formular2 aktivieren </h5>
-                <?php if(get_option('bs_formular_message')): ?>
+                <h5 class="card-title"><i class="wp-blue bi bi-exclude"></i>&nbsp;Plugin "<?=strtoupper($this->basename)?>" aktivieren </h5>
+                <?php if($options['license_message']): ?>
                 <p style="padding: 0 1rem; color: red;text-align: center"><i class="bi bi-exclamation-triangle-fill"></i>&nbsp;
-                    <b><?=get_option('bs_formular_message')?></b></p>
+                    <b><?=$options['license_message']?></b></p>
                 <?php endif; ?>
                 <hr>
                 <div id="licence_display_data">
@@ -63,18 +67,18 @@ $reloadUrl=admin_url();
                                 <div class="form-input-wrapper">
                                     <div class="col">
                                         <label for="ClientIDInput" class="form-label">
-                                            <?= __('Client ID', 'bs-formular2') ?> <span
+                                            Client ID <span
                                                     class="text-danger">*</span></label>
                                         <input type="text" name="client_id" class="form-control"
-                                               value="<?= get_option('bs_formular_client_id') ?>"
+                                               value="<?= $options['client_id'] ?>"
                                                id="ClientIDInput" autocomplete="cc-number" required>
                                     </div>
                                     <div class="col">
                                         <label for="clientSecretInput" class="form-label">
-                                            <?= __('Client secret', 'bs-formular2') ?> <span
+                                            Client secret <span
                                                     class="text-danger">*</span></label>
                                         <input type="text" name="client_secret" class="form-control"
-                                               value="<?= get_option('bs_formular_client_secret') ?>"
+                                               value="<?= $options['client_secret'] ?>"
                                                id="clientSecretInput" autocomplete="cc-number" required>
                                     </div>
                                 </div>
