@@ -5,6 +5,7 @@ defined('ABSPATH') or die();
 use Bs_Formular2;
 use Exception;
 use BS\Formular2\BS_Formular2_Defaults_Trait;
+use stdClass;
 
 /**
  * The BS-Formular2 Helper Class.
@@ -178,5 +179,79 @@ class BS_Formular2_Helper {
             }
         }
         return $result;
+    }
+
+    /**
+     * @param $search
+     * @param $replace
+     * @param $string
+     * @param int $limit
+     * @return mixed
+     */
+    public function bs_form_string_replace_limit($search, $replace, $string, int $limit = 1): string
+    {
+        $pos = strpos($string, $search);
+        if ($pos === false) {
+            return $string;
+        }
+        $searchLen = strlen($search);
+        for ($i = 0; $i < $limit; $i++) {
+            $string = substr_replace($string, $replace, $pos, $searchLen);
+            $pos = strpos($string, $search);
+            if ($pos === false) {
+                break;
+            }
+        }
+
+        return $string;
+    }
+
+    /**
+     * @param $file_post
+     * @return array
+     */
+    public function reArrayFiles($file_post): array
+    {
+        $file_ary = array();
+        $file_count = count($file_post['name']);
+        $file_keys = array_keys($file_post);
+
+        for ($i = 0; $i < $file_count; $i++) {
+            foreach ($file_keys as $key) {
+                $file_ary[$i][$key] = $file_post[$key][$i];
+            }
+        }
+        return $file_ary;
+    }
+
+    /**
+     * @param $dir
+     * @return bool
+     */
+    public function bsFormDestroyDir($dir): bool
+    {
+        if (!is_dir($dir) || is_link($dir))
+            return unlink($dir);
+
+        foreach (scandir($dir) as $file) {
+            if ($file == "." || $file == "..")
+                continue;
+            if (!$this->bsFormDestroyDir($dir . "/" . $file)) {
+                chmod($dir . "/" . $file, 0777);
+                if (!$this->bsFormDestroyDir($dir . "/" . $file)) return false;
+            }
+        }
+        return rmdir($dir);
+    }
+
+    public function bsFormDeleteFileFolder()
+    {
+        foreach (scandir(BS_FILE_UPLOAD_DIR) as $dir) {
+            if ($dir == "." || $dir == "..")
+                continue;
+            if (is_dir(BS_FILE_UPLOAD_DIR . $dir)) {
+                $this->bsFormDestroyDir(BS_FILE_UPLOAD_DIR . $dir);
+            }
+        }
     }
 }

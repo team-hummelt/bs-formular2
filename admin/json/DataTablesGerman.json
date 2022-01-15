@@ -14,7 +14,7 @@
 		"sFirst":    	"Erste",
 		"sPrevious": 	"Zurück",
 		"sNext":     	"Nächste",
-		"sLast":     	"varzte"
+		"sLast":     	"letzte"
 	},
 	"oAria": {
 		"sSortAscending":  ": aktivieren, um Spalte aufsteigend zu sortieren",

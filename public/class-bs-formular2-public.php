@@ -1,5 +1,6 @@
 <?php
 namespace BS\Formular2;
+use BS\BSFormular2\BS_Formular_Public_Ajax_Handle;
 use Bs_Formular2;
 
 /**
@@ -24,14 +25,25 @@ use Bs_Formular2;
  */
 class Bs_Formular2_Public {
 
+    private static $instance;
+
 	/**
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $basename    The ID of this plugin.
 	 */
-	private string $plugin_name;
+	private string $basename;
+
+    /**
+     * The plugin dir.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $plugin_dir    plugin dir Path.
+     */
+    protected string $plugin_dir;
 
 	/**
 	 * The version of this plugin.
@@ -50,20 +62,61 @@ class Bs_Formular2_Public {
      */
     protected Bs_Formular2 $main;
 
+    /**
+     * TRAIT of Default Settings.
+     *
+     * @since    1.0.0
+     */
+    use BS_Formular2_Defaults_Trait;
+
+
+    /**
+     * @param string $basename
+     * @param string $version
+     * @param Bs_Formular2 $main
+     * @return static
+     */
+    public static function instance(string $basename, string $version, Bs_Formular2 $main ): self
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new self($basename, $version, $main);
+        }
+        return self::$instance;
+    }
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @param string    $plugin_name    The name of the plugin.
+	 * @param string    $basename    The name of the plugin.
 	 * @param string    $version        The version of this plugin.
 	 * @since    1.0.0
 	 */
-	public function __construct(string $plugin_name, string $version, $main ) {
+	public function __construct(string $basename, string $version, $main ) {
 
-		$this->plugin_name = $plugin_name;
+		$this->basename = $basename;
 		$this->version = $version;
         $this->main = $main;
-
+        $this->plugin_dir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename;
 	}
+
+    /**
+     * Register BS-Formular2 AJAX NO ADMIN RESPONSE HANDLE
+     *
+     * @since    1.0.0
+     */
+    public function prefix_ajax_BsFormularNoAdmin(): void
+    {
+
+        check_ajax_referer('bs_form_public_handle');
+
+        /**
+         * The class for defining AJAX in the admin area.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/ajax/bs-form-public-ajax.php';
+        $publicAjaxHandle = BS_Formular_Public_Ajax_Handle::instance($this->version, $this->basename);
+        wp_send_json($publicAjaxHandle->bs_formular_public_ajax_handle());
+    }
+
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
@@ -84,8 +137,22 @@ class Bs_Formular2_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/bs-formular2-public.css', array(), $this->version, 'all' );
+        $ifHupaStarter = wp_get_theme('hupa-starter');
+        if (!$ifHupaStarter->exists()) {
+            $modificated = date( 'YmdHi', filemtime( $this->plugin_dir . '/admin/css/font-awesome.css' ) );
+            wp_enqueue_style( 'bootstrap-formular-font-awesome', plugins_url( $this->basename ) . '/admin/css/font-awesome.css', array(),$modificated , '' );
 
+            $modificated = date( 'YmdHi', filemtime( $this->plugin_dir . '/assets/public/css/bs/bootstrap.min.css' ) );
+            wp_enqueue_style( 'bootstrap-formular-namespace', plugins_url( $this->basename ) . '/public/css/bs/bootstrap.min.css', array(),$modificated , '' );
+        }
+
+        $modificated = date( 'YmdHi', filemtime( $this->plugin_dir . '/public/css/bs-formular-public.css' ) );
+        wp_enqueue_style( 'bootstrap-formular-public-style', plugins_url( $this->basename ) . '/public/css/bs-formular-public.css', array(), $modificated, '');
+        $modificated = date( 'YmdHi', filemtime( $this->plugin_dir . '/public/js/bs-formular-public.js' ) );
+        wp_enqueue_script( 'bootstrap-formular-public-script', plugins_url( $this->basename ) . '/public/js/bs-formular-public.js', array(),$modificated, true );
+        //filepond
+        $modificated = date( 'YmdHi', filemtime( $this->plugin_dir . '/public/js/filepond/filepond-config.js' ) );
+        wp_enqueue_script( 'bootstrap-formular-filepond-script', plugins_url( $this->basename ) . '/public/js/filepond/filepond-config.js', array(),$modificated, true );
 	}
 
 	/**
@@ -107,7 +174,47 @@ class Bs_Formular2_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/bs-formular2-public.js', array( 'jquery' ), $this->version, false );
+        $ifHupaStarter = wp_get_theme('hupa-starter');
+        if (!$ifHupaStarter->exists()) {
+            $modificated = date('YmdHi', filemtime($this->plugin_dir . '/public/js/bs/bootstrap.bundle.min.js'));
+            wp_enqueue_script( 'bootstrap-bs-formular', plugins_url( $this->basename ) . '/public/js/bs/bootstrap.bundle.min.js', array(),$modificated, true );
+        }
+
+        $fileLang = $this->get_theme_default_settings('file_upload_language');
+        $options = get_option($this->basename . '-get-options');
+        $redirectData = [];
+        global $post;
+        $formData = apply_filters('get_formulare_by_args','WHERE redirect_page='.$post->ID.'', false);
+        if($formData->status) {
+            $data = $formData->record;
+            if(isset($data->redirect_data) && $data->redirect_data) {
+                $redirectData = json_decode($data->redirect_data);
+            }
+        }
+
+        $title_nonce = wp_create_nonce('bs_form_public_handle');
+        wp_register_script('bs-formular-public-ajax-script', '', [], '', true);
+        wp_enqueue_script('bs-formular-public-ajax-script');
+        wp_localize_script('bs-formular-public-ajax-script', 'bs_form_ajax_obj', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => $title_nonce,
+            'bs_form_redirect_data' => $redirectData,
+            'file_size' => $options['file_max_size'] * 1024 * 1024,
+            'post_id' => $post->ID,
+            'file_size_mb' => ['file_max_size'],
+            'file_size_all_mb' => $options['file_max_all_size'],
+            'max_files' => $options['upload_max_files'],
+            'assets_url' => plugins_url($this->basename) .'/public/',
+            'language' => $fileLang
+        ));
+
+        if($formData->status) {
+            $updData = [
+                'shortcode' => $formData->record->shortcode,
+                'redirect_data' => ''
+            ];
+            apply_filters('bs_form_update_redirect_data', (object) $updData);
+        }
 
 	}
 

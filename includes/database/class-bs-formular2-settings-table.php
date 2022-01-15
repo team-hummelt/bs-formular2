@@ -4,6 +4,7 @@ namespace BS\BSFormular2;
 defined('ABSPATH') or die();
 
 use BS\Formular2\BS_Formular2_Defaults_Trait;
+use stdClass;
 
 /**
  * The Table BS-Formular2 Settings plugin class.
@@ -66,6 +67,10 @@ final class BS_Formular_Settings_Table
         return self::$instance;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     */
     public function set_bs_formular2_settings($key, $value)
     {
         global $wpdb;
@@ -76,6 +81,47 @@ final class BS_Formular_Settings_Table
                 'id' => $this->settings_id,
                 $key => $value,
             ),
+            array('%s')
+        );
+    }
+
+    /**
+     * @param $select
+     * @return object
+     */
+    public function bsFormGetFormularSettingsByArgs($select): object
+    {
+        global $wpdb;
+        $return = new stdClass();
+        $return->status = false;
+        $table = $wpdb->prefix . $this->table_formular2_settings;
+        $where = sprintf('WHERE id=%s', $this->settings_id);
+        $result = $wpdb->get_row("SELECT {$select} FROM {$table} {$where}");
+        if (!$result) {
+            return $return;
+        }
+        $data = json_decode($result->$select);
+        $return->status = true;
+        $return->$select = $data;
+
+        return $return;
+    }
+
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function updateDefaultSettings($key, $value)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . $this->table_formular2_settings;
+        $wpdb->update(
+            $table,
+            array(
+                $key => $value,
+            ),
+            array('id' => $this->settings_id),
             array('%s')
         );
     }

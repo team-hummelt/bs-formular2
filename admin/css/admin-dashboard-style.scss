@@ -4,8 +4,21 @@ $bg-gray: #f5f5f5;
 $hupa-color: #e11d2a;
 $tooltip-bg: #e11d2a;
 
+$yellow:#ffbf31;
+$yellow-light:#ffce61;
+$bg-form:#6b7072;
+
 body .wp-bs-starter-wrapper {
   font-size: 1rem!important;
+}
+
+.font-yellow {
+  color: $yellow!important;
+}
+
+.bg-orange {
+  background-color: $bg-form!important;
+  color: $yellow!important;
 }
 
 .pcr-app .pcr-interaction .pcr-type.active {
@@ -331,23 +344,24 @@ background-color: #fdfdfd!important;
   .btn-hupa.btn-outline-secondary:hover,
   .btn-hupa.btn-outline-secondary:disabled {
     color: #fff !important;
-    background-color: $hupa-color !important;
-    border-color: $hupa-color !important;
+    background-color: $bg-form !important;
+    border-color: #fff !important;
     opacity: 1 !important;
   }
 
   .btn-hupa {
+    border-color: #d5d5d5;
     i {
-      color: $hupa-color;
+      color: #eba200;
     }
 
     &:hover i {
-      color: #fff;
+      color: $yellow;
     }
   }
 
   .btn-hupa.active i {
-    color: #fff;
+    color: $yellow;
   }
 
 

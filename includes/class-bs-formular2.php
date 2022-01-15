@@ -30,8 +30,14 @@
 
 
 use BS\BSFormular2\BS_Formular2_Helper;
+use BS\BSFormular2\BS_Formular_Formular_Table;
+use BS\BSFormular2\BS_Formular_Message_Table;
+use BS\BSFormular2\BS_Formular_Post_Eingang_Table;
+use BS\BSFormular2\BS_Formular_Public_Ajax_Handle;
 use BS\BSFormular2\BS_Formular_Settings_Table;
 use BS\Formular2\Bs_Formular2_Admin;
+use BS\Formular2\BS_Formular2_Form_Inputs;
+use BS\Formular2\BS_Formular2_Form_Validate_Inputs;
 use BS\Formular2\BS_Formular2_Options;
 use BS\Formular2\Bs_Formular2_Public;
 use BSFormular2\License\Hupa_License_Register;
@@ -112,7 +118,6 @@ class Bs_Formular2 {
      */
     protected $remote;
 
-
     /**
      * Get-Options Class.
      *
@@ -169,9 +174,15 @@ class Bs_Formular2 {
         //Set Locale "bs-formular2"
 		$this->set_locale();
         // Register License and Import Data from Server
-        $this->register_bs_formular2_license();
+        if(BS_FORMULAR2_Requires_Activation){
+            $this->register_bs_formular2_license();
+        }
         // Set Settings Default-Optionen AND Helper Functions
         $this->bs_formular2_options();
+        // Set Inputs Functions
+        $this->bs_formular2_input_handle();
+        // Set Validate Formulare Functions
+        $this->bs_formular2_validate_input_handle();
         // BS-Formular2 Database
         $this->bs_formular2_database();
         // BS-Formular2 Database
@@ -224,7 +235,6 @@ class Bs_Formular2 {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/license/hupa_client_api_wp_remote.php';
 
-
         /**
          * The class for the options of the BS-Formular2
          * of the plugin.
@@ -243,9 +253,26 @@ class Bs_Formular2 {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/database/class-bs-formular2-settings-table.php';
 
+        /**
+         * The class for the Database TABLE bs_formular2_message
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/database/class-bs-formular2-message-table.php';
 
         /**
-         * The class for the Databse of the BS-Formular2
+         * The class for the Database TABLE bs_formular2
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/database/class-bs-formular2-formular-table.php';
+
+        /**
+         * The class for the Database TABLE bs_formular2_post_eingang
+         * of the plugin.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/database/class-bs-formular2-post-eingang.php';
+
+        /**
+         * The class for the Options of the BS-Formular2
          * of the plugin.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class_bs-formular2_options.php';
@@ -262,23 +289,44 @@ class Bs_Formular2 {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bs-formular2-i18n.php';
 
-
         /**
          * The BS-Formular2 Helper Class.
          *
          */
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bs-formular2-helper.php';
 
-		/**
+        /**
+         * The BS-Formular2 PHPMAILER SMTP-Test.
+         *
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Mailer/class-bs-formular2-smtp-test.php';
+
+        /**
+         * The class for create and validate Formulars.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bs-formular2-form-inputs.php';
+
+        /**
+         * The class for validate input Formulars.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-bs-formular2-validate-inputs.php';
+
+        /**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-bs-formular2-admin.php';
 
-		/**
+        /**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-bs-formular2-public.php';
+
+
+        /**
+         * The class for defining AJAX in the public area.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/ajax/bs-form-public-ajax.php';
 
 		$this->loader = new Bs_Formular2_Loader();
 
@@ -356,11 +404,10 @@ class Bs_Formular2 {
         /** Register License Admin Menu
          * @since    1.0.0
          */
+
         // TODO REGISTER LICENSE MENU
-
-
         $options = get_option($this->plugin_name . '_server_api');
-        if (!$options['product_install_authorize']) {
+        if (BS_FORMULAR2_Requires_Activation && !$options['product_install_authorize']) {
             $this->loader->add_action('admin_menu', $this->license, 'register_hupa_license_menu');
         }
 
@@ -396,9 +443,11 @@ class Bs_Formular2 {
      */
     private function bs_formular2_options()
     {
-        $this->options = BS_Formular2_Options::instance();
+        $this->options = BS_Formular2_Options::instance($this->get_plugin_name(), $this->get_version());
         $this->loader->add_action('init', $this->options, 'bs_formular2_set_default_options');
-        $this->loader->add_action('get_bs_form2_default_settings', $this->options, 'func_get_bs_form2_default_settings',10 ,2);
+        $this->loader->add_filter('bs_form_default_settings', $this->options, 'get_bs_form2_default_settings',10 ,2);
+        //TODO E-Mail Template auswahl
+        $this->loader->add_filter('bs_form_select_email_template', $this->options, 'bsFormSelectEmailTemplate',10, 2);
 
         global $bsForm2Option;
         $bsForm2Option = $this->options;
@@ -413,7 +462,7 @@ class Bs_Formular2 {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Bs_Formular2_Admin( $this->get_plugin_name(), $this->get_version(), $this->main );
+        $plugin_admin = Bs_Formular2_Admin::instance($this->get_plugin_name(), $this->get_version(), $this->main);
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
@@ -422,8 +471,16 @@ class Bs_Formular2 {
         $this->loader->add_action('init', $plugin_admin, 'gutenberg_block_bootstrap_formular2_register');
         $this->loader->add_action('enqueue_block_editor_assets', $plugin_admin, 'bs_formular2_plugin_editor_block_scripts');
 
-        //TODO REGISTER ADMIN MAPS PAGE
+        //TODO REGISTER Admin-Menu
         $this->loader->add_action('admin_menu', $plugin_admin, 'register_bs_formular2_menu');
+        //TODO REGISTER WP-Mailer
+        $this->loader->add_action('phpmailer_init', $plugin_admin, 'bs_formular2_mailer_phpmailer_configure');
+        $this->loader->add_action('wp_mail_content_type', $plugin_admin, 'bs_formular2_mail_content_type');
+        $this->loader->add_action('wp_mail_failed', $plugin_admin, 'bs_formular2_log_mailer_errors');
+
+        // TODO AJAX ADMIN RESPONSE HANDLE
+        $this->loader->add_action('wp_ajax_BsFormularHandle', $plugin_admin, 'prefix_ajax_BsFormularHandle');
+
     }
 
 	/**
@@ -435,7 +492,15 @@ class Bs_Formular2 {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Bs_Formular2_Public( $this->get_plugin_name(), $this->get_version(), $this->main );
+        $plugin_public = Bs_Formular2_Public::instance($this->get_plugin_name(), $this->get_version(), $this->main );
+
+        // TODO AJAX PUBLIC RESPONSE HANDLE
+        $this->loader->add_action('wp_ajax_nopriv_BsFormularNoAdmin', $plugin_public, 'prefix_ajax_BsFormularNoAdmin');
+        $this->loader->add_action('wp_ajax_BsFormularNoAdmin', $plugin_public, 'prefix_ajax_BsFormularNoAdmin');
+
+        // TODO AJAX PUBLIC RESPONSE CLASS
+        global $publicAjaxHandle;
+        $publicAjaxHandle = BS_Formular_Public_Ajax_Handle::instance($this->get_version(), $this->get_plugin_name());
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
@@ -475,8 +540,106 @@ class Bs_Formular2 {
          */
         global $bsFormularTableSettings;
         $bsFormularTableSettings = new BS_Formular_Settings_Table($this->get_db_version(), $this->get_settings_id());
+        // Set Default Settings
+        $this->loader->add_filter('set_formular2_settings', $bsFormularTableSettings, 'set_bs_formular2_settings', 10,2);
+        // Get Settings by Select
+        $this->loader->add_filter('bs_form_get_settings_by_select', $bsFormularTableSettings, 'bsFormGetFormularSettingsByArgs');
+        // UPDATE Default Settings
+        $this->loader->add_filter('bs_update_default_settings', $bsFormularTableSettings, 'updateDefaultSettings',10,2);
 
-        $this->loader->add_action('set_formular2_settings', $bsFormularTableSettings, 'set_bs_formular2_settings', 10,2);
+
+        /**
+         * Table bs_formular2
+         * @since    1.0.0
+         */
+        global $bsFormularTable;
+        $bsFormularTable = new BS_Formular_Formular_Table($this->get_db_version(), $this->get_settings_id(), $this->get_plugin_name());
+
+        // GET Formulare
+        $this->loader->add_filter('get_formulare_by_args', $bsFormularTable, 'bsFormGetFormulareByArgs', 10, 3);
+        // Formular Speichern
+        $this->loader->add_filter('set_bs_formular', $bsFormularTable, 'bsFormSetFormular');
+        // Formular Update
+        $this->loader->add_filter('update_bs_formular', $bsFormularTable, 'updateBsFormular');
+        // Formular löschen
+        $this->loader->add_filter('delete_bs_formular', $bsFormularTable, 'deleteBsFormular');
+        // Update Formular Meldungen
+        $this->loader->add_filter('update_bs_form_meldungen', $bsFormularTable, 'updateFormMeldungen');
+        // Get Formulardaten by JOIN
+        $this->loader->add_filter('bs_form_formular_data_by_join', $bsFormularTable, 'bsFormFormularDataByJoin',10 ,2);
+        // Get Input By ID
+        $this->loader->add_filter('get_formular_inputs_by_id', $bsFormularTable, 'bsFormGetFormulareInputsById');
+        //UPDATE REDIRECT DATA
+        $this->loader->add_filter('bs_form_update_redirect_data', $bsFormularTable, 'updateRedirectData');
+        //GET Formular Meldungen by ID|Shortcode
+        $this->loader->add_filter('bs_formular_message', $bsFormularTable, 'get_bs_formular_message',10,3);
+
+        /**
+         * Table bs_formular2_message
+         * @since    1.0.0
+         */
+        global $bsFormularMessageTable;
+        $bsFormularMessageTable = new BS_Formular_Message_Table($this->get_db_version(), $this->get_settings_id(), $this->get_plugin_name());
+
+        //GET Formular Message
+        $this->loader->add_filter('get_formular_message_by_args', $bsFormularMessageTable, 'bsFormGetFormularMessageByArgs', 10, 3);
+        // Formular E-Mail Message Update
+        $this->loader->add_filter('update_form_message_email_txt', $bsFormularMessageTable, 'updateMessageEmailTxt', 10, 2);
+        // Formular Message Speichern
+        $this->loader->add_filter('set_bs_message_formular', $bsFormularMessageTable, 'setMessageFormular');
+        // Formular Send Message Update
+        $this->loader->add_filter('update_bs_msg_formular', $bsFormularMessageTable, 'updateFormMessage');
+        // Formular Auto Send Message Update
+        $this->loader->add_filter('update_form_auto_message', $bsFormularMessageTable, 'updateFormAutoMessage', 10,2);
+
+        /**
+         * Table bs_formular2_post_eingang
+         * @since    1.0.0
+         */
+        global $bsFormularPostEingangTable;
+        $bsFormularPostEingangTable = new BS_Formular_Post_Eingang_Table($this->get_db_version(), $this->get_settings_id(), $this->get_plugin_name());
+
+        //Set E-Mail Data
+        $this->loader->add_filter('set_email_empfang_table', $bsFormularPostEingangTable, 'bsFormSetEmailEmpfang');
+        // Get E-Mail Data
+        $this->loader->add_filter('get_email_empfang_data', $bsFormularPostEingangTable, 'getEmailEmpfangData',10,2);
+        // Delete E-Mail
+        $this->loader->add_filter('delete_bs_formular_email', $bsFormularPostEingangTable, 'deleteFormularEmail');
+
+    }
+
+    /**
+     * Register Class BS_Formular2_Form_Inputs hooks
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function bs_formular2_input_handle() {
+        global $bsFormularInputHandle;
+        $bsFormularInputHandle = BS_Formular2_Form_Inputs::instance($this->get_plugin_name(), $this->get_version(), $this->get_settings_id());
+
+        // TODO CREATE FORMULAR FELDER
+        $this->loader->add_filter('create_formular_fields', $bsFormularInputHandle, 'bs_form_create_formular_fields');
+
+    }
+
+
+    /**
+     * Register Class BS_Formular2_Form_Validate_Inputs hooks
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function bs_formular2_validate_input_handle(){
+        global $bsFormularValidateInput;
+        $bsFormularValidateInput = BS_Formular2_Form_Validate_Inputs::instance($this->get_plugin_name(),$this->get_version(), $this->get_settings_id());
+
+        // TODO VALIDATE FORMULAR SEND MESSAGE
+        $this->loader->add_filter('bs_formular_validate_message_inputs', $bsFormularValidateInput, 'bsFormularValidateMessageInputs', 10, 3);
+        // TODO VALIDATE formular Input Checkbox / Radio
+        $this->loader->add_filter('validate_formular_radio_checkbox', $bsFormularValidateInput, 'validateFormularRadioCheckbox', 10, 3);
 
     }
 
@@ -495,6 +658,16 @@ class Bs_Formular2 {
         $this->loader->add_filter('bs_load_random_string',$bs_formular2_helper, 'bs_formular2_load_random_string');
         $this->loader->add_filter('bs_generate_random_id', $bs_formular2_helper, 'getBSFormular2GenerateRandomId', 10, 4);
         $this->loader->add_filter('bs_file_size_convert', $bs_formular2_helper, 'BsFormular2FileSizeConvert');
+
+        //Todo Create File multi Upload
+        $this->loader->add_filter('re_array_files', $bs_formular2_helper, 'reArrayFiles');
+        //TODO DESTROY DIR
+        $this->loader->add_action('bs_form_destroy_dir', $bs_formular2_helper, 'bsFormDestroyDir');
+        //TODO Delete File Input Folders
+        $this->loader->add_action('bs_form_delete_file_folder', $bs_formular2_helper, 'bsFormDeleteFileFolder');
+        //TODO STRING REPLACE
+        $this->loader->add_filter('string_replace_limit', $bs_formular2_helper, 'bs_form_string_replace_limit',10,4);
+
     }
 
 	/**

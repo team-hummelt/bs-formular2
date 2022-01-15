@@ -11,19 +11,23 @@
  * @package    Bs_Formular2
  * @subpackage Bs_Formular2/admin/partials
  */
+
+$options = get_option($this->basename . '-get-options');
 ?>
+
 
 <div class="wp-bs-starter-wrapper">
 
     <div class="container">
         <div class="card card-license shadow-sm">
-            <h5 class="card-header d-flex align-items-center bg-hupa py-4">
-                <i class="icon-hupa-white d-block mt-2" style="font-size: 2rem"></i>&nbsp;
-                <?= __( 'Forms', 'bs-formular2' ) ?> </h5>
+            <h5 class="card-header d-flex align-items-center bg-orange py-4">
+                <img src="<?=plugins_url('bs-formular2') ?>/admin/images/icon.svg" alt="BS-Formular2" width="32p" height="32px">
+                &nbsp;
+                BS-Formular 2</h5>
             <div class="card-body pb-4" style="min-height: 72vh">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title"><i
-                                class="hupa-color fa fa-arrow-circle-right"></i> <?= __( 'Forms', 'bs-formular2' ) ?>
+                                class="font-yellow fa fa-arrow-circle-right"></i> <?= __( 'Forms', 'bs-formular2' ) ?>
                         / <span id="currentSideTitle"><?= __( 'Overview', 'bs-formular2' ) ?></span>
                     </h5>
                 </div>
@@ -69,7 +73,7 @@
                             type="button"
                             data-bs-toggle="collapse" data-bs-target="#collapseHelpSite"
                             class="btn-formular-collapse btn btn-hupa btn-outline-secondary btn-sm ms-auto"><i
-                                class="fa fa-life-ring"></i>&nbsp;
+                                class="hupa-color fa fa-life-ring"></i>&nbsp;
                         <?= __( 'Help', 'bs-formular2' ) ?>
                     </button>
                 </div>
@@ -148,13 +152,13 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-12 mb-3">
                                             <label for="emailABSInput" class="form-label">
-                                                <?= __( 'Name oder Firma des Absenders:', 'bs-formular2' ) ?> </label>
+                                                <?= __( 'Name or company of the sender:', 'bs-formular2' ) ?> </label>
                                             <input type="text" class="form-control"
-                                                   value="<?= get_option( 'email_abs_name' ) ?>"
+                                                   value="<?= $options[ 'email_abs_name' ] ?>"
                                                    name="email_abs_name"
                                                    id="emailABSInput">
-                                            <div id="helpEmailABSInput" class="form-text">Wenn der Eintrag leer bleibt,
-                                                wird der Seitentitel verwendet.
+                                            <div id="helpEmailABSInput" class="form-text">
+                                                <?= __( 'If the entry remains empty, the page title is used.', 'bs-formular2' ) ?>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-12"></div>
@@ -163,15 +167,14 @@
                                         <div class="col-lg-6 col-12 mb-3">
 
                                             <label for="absEmailInput" class="form-label">
-                                                <?= __( 'Absender E-Mail:', 'bs-formular2' ) ?> <span
+                                                <?= __( 'Sender Email:', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="email" class="form-control"
-                                                   value="<?= get_option( 'bs_abs_email' ) ?>"
+                                                   value="<?= $options[ 'bs_abs_email' ] ?>"
                                                    name="email_adresse"
                                                    id="absEmailInput">
-                                            <div id="helpEbsEmailInput" class="form-text">In den meisten Fällen, muss
-                                                hier
-                                                die Provider-E-Mail eingegeben werden.
+                                            <div id="helpEbsEmailInput" class="form-text">
+                                                <?= __( 'In most cases, the provider e-mail must be entered here.', 'bs-formular2' ) ?>
                                             </div>
                                         </div>
 
@@ -180,7 +183,7 @@
                                                 <?= __( 'SMTP Host:', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="text" class="form-control"
-                                                   value="<?= get_option( 'bs_form_smtp_host' ) ?>"
+                                                   value="<?= $options[ 'bs_form_smtp_host' ] ?>"
                                                    placeholder="mail.gmx.net"
                                                    name="smtp_host" id="smtpHostInput">
                                         </div>
@@ -193,7 +196,7 @@
                                                 <?= __( 'SMTP Port:', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="number" class="form-control"
-                                                   value="<?= get_option( 'bs_form_smtp_port' ) ?>" placeholder="587"
+                                                   value="<?= $options[ 'bs_form_smtp_port' ] ?>" placeholder="587"
                                                    name="smtp_port" id="smtpPortInput">
 
                                         </div>
@@ -203,7 +206,7 @@
                                                 <?= __( 'SMTP Secure:', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="text" class="form-control"
-                                                   value="<?= get_option( 'bs_form_smtp_secure' ) ?>" placeholder="tls"
+                                                   value="<?= $options[ 'bs_form_smtp_secure' ] ?>" placeholder="tls"
                                                    name="smtp_secure" id="smtpSecureInput"
                                                    autocomplete="cc-number">
                                         </div>
@@ -212,17 +215,17 @@
                                         <div class="col-lg-6 col-12 mb-3">
 
                                             <label for="emailUserInput" class="form-label">
-                                                <?= __( 'Benutzername:', 'bs-formular2' ) ?> <span
+                                                <?= __( 'Username:', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="text" class="form-control"
-                                                   value="<?= get_option( 'bs_form_email_benutzer' ) ?>"
+                                                   value="<?= $options[ 'bs_form_email_benutzer' ] ?>"
                                                    name="email_benutzer"
                                                    id="emailUserInput" autocomplete="cc-number">
 
                                         </div>
                                         <div class="col-lg-6 col-12 mb-3">
                                             <label for="emailPWInput" class="form-label">
-                                                <?= __( 'Passwort:', 'bs-formular2' ) ?> <span
+                                                <?= __( 'Password:', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="password" class="form-control"
                                                    placeholder="xxxxxxxxxxxxxxxxxxxxxx"
@@ -235,9 +238,9 @@
                                             <div class="form-check form-switch">
                                                 <input onclick="this.blur()" class="form-check-input" type="checkbox"
                                                        name="smtp_auth_check"
-                                                       id="smtpAuthChecked" <?= ! get_option( 'bs_form_smtp_auth_check' ) ?: 'checked' ?>>
+                                                       id="smtpAuthChecked" <?= ! $options[ 'bs_form_smtp_auth_check' ] ?: 'checked' ?>>
                                                 <label class="form-check-label"
-                                                       for="smtpAuthChecked"><?= __( 'SMTP Authentifizierung:', 'bs-formular2' ) ?></label>
+                                                       for="smtpAuthChecked"><?= __( 'SMTP Authentication:', 'bs-formular2' ) ?></label>
                                             </div>
                                         </div>
                                         <div class="col-lg-6 col-12 mb-3"></div>
@@ -246,9 +249,9 @@
                                     <div class="form-check form-switch">
                                         <input onclick="this.blur()" name="email_aktiv" class="form-check-input"
                                                type="checkbox"
-                                               id="checkMailAktiv" <?= ! get_option( 'email_empfang_aktiv' ) ?: 'checked' ?>>
-                                        <label class="form-check-label" for="checkMailAktiv">E-Mail speichern
-                                            aktiv</label>
+                                               id="checkMailAktiv" <?= ! $options['email_empfang_aktiv'] ?: 'checked' ?>>
+                                        <label class="form-check-label" for="checkMailAktiv"><?= __( 'Save email', 'bs-formular2' ) ?>
+                                            <?= __( 'active', 'bs-formular2' ) ?></label>
                                     </div>
                                     <hr>
                                     <h5 class="card-title">
@@ -259,20 +262,20 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-12 mb-3">
                                             <label for="maxSizeInput" class="form-label">
-                                                <?= __( 'maximale File Größe (MB):', 'bs-formular2' ) ?> <span
+                                                <?= __( 'Maximum File Size (MB):', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="number" min="1" max="10" class="form-control"
-                                                   value="<?= get_option( 'file_max_size' ) ? get_option( 'file_max_size' ) : '2' ?>"
+                                                   value="<?= $options[ 'file_max_size' ] ?: '2' ?>"
                                                    name="file_max_size"
                                                    id="maxSizeInput" autocomplete="cc-number">
                                         </div>
 
                                         <div class="col-lg-6 col-12 mb-3">
                                             <label for="maxSizeAllInput" class="form-label">
-                                                <?= __( 'maximale gesamt Upload-Größe (MB:)', 'bs-formular2' ) ?> <span
+                                                <?= __( 'maximum total upload size (MB:)', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="number" min="1" max="50" class="form-control"
-                                                   value="<?= get_option( 'file_max_all_size' ) ? get_option( 'file_max_all_size' ) : '6' ?>"
+                                                   value="<?= $options[ 'file_max_all_size' ] ?: '6' ?>"
                                                    name="file_max_all_size"
                                                    id="maxSizeAllInput" autocomplete="cc-number">
                                         </div>
@@ -281,10 +284,10 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-12 mb-3">
                                             <label for="uploadMaxFilesInput" class="form-label">
-                                                <?= __( 'Max. Files pro E-Mail', 'bs-formular2' ) ?> <span
+                                                <?= __( 'Max. Files per e-mail', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="number" min="1" max="10" class="form-control"
-                                                   value="<?= get_option( 'upload_max_files' ) ? get_option( 'upload_max_files' ) : '5' ?>"
+                                                   value="<?= $options[ 'upload_max_files' ] ?: '5' ?>"
                                                    name="upload_max_files"
                                                    id="uploadMaxFilesInput" autocomplete="cc-number">
                                         </div>
@@ -293,10 +296,11 @@
                                                 <?= __( 'File-Upload MimeTypes', 'bs-formular2' ) ?> <span
                                                         class="text-danger">*</span></label>
                                             <input type="text" class="form-control"
-                                                   value="<?= get_option( 'upload_mime_types' ) ? get_option( 'upload_mime_types' ) : 'pdf' ?>"
+                                                   value="<?= $options[ 'upload_mime_types' ] ?: 'pdf' ?>"
                                                    name="mime_type"
                                                    id="uploadMimeTypesInput" autocomplete="cc-number">
-                                            <div id="uploadMimeTypesHelp" class="form-text">MimeTypes mit Komma oder Semikolon trennen.<br> (z.B. pdf, jpg, png)
+                                            <div id="uploadMimeTypesHelp" class="form-text">
+                                                <?= __( 'Separate MimeTypes with comma or semicolon.<br> (e.g. pdf, jpg, png)', 'bs-formular2' ) ?>
                                             </div>
                                         </div>
                                     </div>
@@ -304,15 +308,17 @@
                                     <div class="form-check form-switch">
                                         <input onclick="this.blur()" name="multi_upload" class="form-check-input"
                                                type="checkbox"
-                                               id="multiUploadAktiv" <?= ! get_option( 'multi_upload' ) ?: 'checked' ?>>
-                                        <label class="form-check-label" for="multiUploadAktiv">Multiple Uploads aktiv</label>
+                                               id="multiUploadAktiv" <?= ! $options[ 'multi_upload' ] ?: 'checked' ?>>
+                                        <label class="form-check-label" for="multiUploadAktiv">
+                                            <?= __( 'Multiple uploads active', 'bs-formular2' ) ?>
+                                        </label>
                                     </div>
                                     <hr>
-
                                 </form>
                                 <button id="load-smtp-check" class="btn btn-blue btn-sm" type="button">
                                     <i class="fa fa-gears"></i>&nbsp;
-                                    SMTP Test
+                                    <?= __( 'SMTP Test', 'bs-formular2' ) ?>
+
                                 </button>
                             </div>
                         </div>
@@ -324,9 +330,8 @@
                         <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray">
                             <div class="d-flex align-items-center">
                                 <h5 class="card-title">
-                                    <i class="font-blue fa fa-life-ring"></i>&nbsp;<?= __( 'Hilfe', 'bs-formular2' ) ?>
+                                    <i class="font-blue fa fa-life-ring"></i>&nbsp;<?= __( 'Help', 'bs-formular2' ) ?>
                                 </h5>
-
                             </div>
                             <hr>
 
@@ -561,6 +566,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         </div>
                     </div><!--parent-->
                 </div><!--card-->
+                <small class="card-body-bottom me-4" style="right: 5rem">DB: <i
+                            class="hupa-color">v<?= BS_FORMULAR2_PLUGIN_DB_VERSION ?></i></small>
                 <small class="card-body-bottom" style="right: 1.5rem">Version: <i
                             class="hupa-color">v<?= $this->version ?></i></small>
             </div>
@@ -598,9 +605,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
              aria-hidden="true">
             <div class="modal-dialog modal-xl modal-fullscreen-xl-down modal-dialog-scrollable">
                 <div class="modal-content">
-                    <div class="modal-header bg-hupa">
-                        <h5 class="modal-title"
-                            id="exampleModalLabel"><?= __( 'bs-formular2', 'bs-formular2' ); ?></h5>
+                    <div class="modal-header bg-orange">
+                        <h5 class="modal-title d-flex justify-content-center"
+                            id="exampleModalLabel">
+                            <img class="me-2" src="<?=plugins_url('bs-formular2') ?>/admin/images/icon.svg" width="32p" height="32px">
+                            <?= __( 'BS-Formular 2', 'bs-formular2' ); ?></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

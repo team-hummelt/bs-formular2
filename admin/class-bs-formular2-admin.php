@@ -1,5 +1,6 @@
 <?php
 namespace BS\Formular2;
+use BS\BSFormular2\BS_Formular_Admin_Ajax_Handle;
 use Bs_Formular2;
 
 /**
@@ -24,14 +25,17 @@ use Bs_Formular2;
  */
 class Bs_Formular2_Admin {
 
+
+    private static $instance;
+
 	/**
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $basename    The ID of this plugin.
 	 */
-	private string $plugin_name;
+	private string $basename;
 
 	/**
 	 * The version of this plugin.
@@ -39,30 +43,51 @@ class Bs_Formular2_Admin {
 	 * @since    1.0.0
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
-	 */
-	private string $version;
+     */
+    private string $version;
 
     /**
      * Store plugin main class to allow public access.
      *
      * @since    1.0.0
-     * @var Bs_Formular2 $main          The main class.
+     * @var Bs_Formular2 $main The main class.
      */
     protected Bs_Formular2 $main;
 
-	/**
-	 * Initialize the class and set its properties.
-	 *
-	 * @param string    $plugin_name    The name of this plugin.
-	 * @param string    $version        The version of this plugin.
+    /**
+     * TRAIT of Default Settings.
+     *
+     * @since    1.0.0
+     */
+    use BS_Formular2_Defaults_Trait;
 
-	 *@since    1.0.0
-	 */
-	public function __construct(string $plugin_name, string $version,  $plugin_main ) {
+    /**
+     * @param string $basename
+     * @param string $version
+     * @param Bs_Formular2 $main
+     * @return static
+     */
+    public static function instance(string $basename, string $version, Bs_Formular2 $main ): self
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new self($basename, $version, $main);
+        }
+        return self::$instance;
+    }
 
-		$this->plugin_name = $plugin_name;
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @param string $basename The name of this plugin.
+     * @param string $version The version of this plugin.
+     * @param Bs_Formular2 $main The version of this plugin.
+     * @since    1.0.0
+     */
+    public function __construct(string $basename, string $version, Bs_Formular2 $main)
+    {
+		$this->basename = $basename;
 		$this->version = $version;
-        $this->main = $plugin_main;
+        $this->main = $main;
 	}
 
 
@@ -74,8 +99,8 @@ class Bs_Formular2_Admin {
     public function register_bs_formular2_menu(): void
     {
         $hook_suffix = add_menu_page(
-            __('Formulare', 'bs-formular2'),
-            __('Formulare', 'bs-formular2'),
+            __('BS-Formular', 'bs-formular2'),
+            __('BS-Formular', 'bs-formular2'),
             'manage_options',
             'bs-formular2',
             array($this, 'admin_bs_formular2_page'),
@@ -97,11 +122,63 @@ class Bs_Formular2_Admin {
     }
 
     /**
+     * Register BS-Formular2 WP-SMTP Mail
+     *
+     * @since    1.0.0
+     */
+    public function bs_formular2_mailer_phpmailer_configure($phpmailer)
+    {
+        $config = get_option($this->basename . '-get-options');
+        $phpmailer->isSMTP();
+        $phpmailer->Host = $config['bs_form_smtp_host'];
+        $phpmailer->SMTPAuth = $config['bs_form_smtp_auth_check'];
+        $phpmailer->Port = $config['bs_form_smtp_port'];
+        $phpmailer->Username = $config['bs_form_email_benutzer'];
+        $phpmailer->Password = $config['bs_form_email_passwort'];
+        $phpmailer->SMTPSecure = $config['bs_form_smtp_secure'];
+        $phpmailer->SMTPDebug = 0;
+        $phpmailer->CharSet = "utf-8";
+    }
+
+    /**
+     * Register BS-Formular2 WP-Mail HTML Content
+     *
+     * @since    1.0.0
+     */
+    public function bs_formular2_mail_content_type(): string
+    {
+        return "text/html";
+    }
+
+    /**
+     * Register BS-Formular2 WP-Mail Error Log
+     *
+     * @since    1.0.0
+     */
+    public function bs_formular2_log_mailer_errors($wp_error)
+    {
+        $dir = 'log' . DIRECTORY_SEPARATOR;
+        if (!is_dir($dir)) {
+            if (!mkdir($dir, 0777, true)) {
+                return '';
+            }
+        }
+
+        $file = $dir . 'mail-error.log';
+        $current = "Mailer Error: " . $wp_error->get_error_message() . "\n";
+        file_put_contents($file, $current, LOCK_EX);
+        // $wp_error->get_error_message();
+    }
+
+
+    /**
      * Register BS-Formular2 ADMIN SCRIPTS
      *
      * @since    1.0.0
      */
-    public function bs_formular2_load_ajax_admin_options_script() {
+    public function bs_formular2_load_ajax_admin_options_script()
+    {
+
         add_action('admin_enqueue_scripts', array($this, 'load_bs_formular2_admin_style'));
         $title_nonce = wp_create_nonce('bs_formular_admin_handle');
 
@@ -112,6 +189,24 @@ class Bs_Formular2_Admin {
             'nonce' => $title_nonce,
         ));
     }
+
+    /**
+     * Register BS-Formular2 AJAX ADMIN RESPONSE HANDLE
+     *
+     * @since    1.0.0
+     */
+    public function prefix_ajax_BsFormularHandle(): void
+    {
+        check_ajax_referer('bs_formular_admin_handle');
+        /**
+         * The class for defining AJAX in the admin area.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/ajax/bs-form-admin-ajax.php';
+        $adminAjaxHandle = BS_Formular_Admin_Ajax_Handle::instance($this->version, $this->basename);
+        wp_send_json($adminAjaxHandle->bs_formular_admin_ajax_handle());
+    }
+
+
 
     /**
      * Register BS-Formular2 Gutenberg Formular Selector
@@ -167,6 +262,8 @@ class Bs_Formular2_Admin {
         wp_enqueue_style('bs-formular-admin-dashboard-style', plugins_url('bs-formular2') . '/admin/css/admin-dashboard-style.css', array(), $this->version, false);
         wp_enqueue_style('bs-formular-data-table-style', plugins_url('bs-formular2') . '/admin/css/tools/dataTables.bootstrap5.min.css', array(), $this->version, false);
 
+
+
         // TODO ADMIN localize Script
         wp_register_script('bs-formular-admin-js-localize', '', [], '', true);
         wp_enqueue_script('bs-formular-admin-js-localize');
@@ -176,6 +273,18 @@ class Bs_Formular2_Admin {
                 'admin_url' => plugins_url('bs-formular2') .'/admin/',
                 'data_table' => plugins_url('bs-formular2') . '/admin/json/DataTablesGerman.json',
                 'site_url' => get_bloginfo('url'),
+            )
+        );
+
+        $language = [
+            'create_edit' => $this->get_theme_default_settings('meldungen_site_language'),
+        ];
+        wp_register_script('bs-formular2-admin-language', '', [], '', true);
+        wp_enqueue_script('bs-formular2-admin-language');
+        wp_localize_script('bs-formular2-admin-language',
+            'bs_form_lang',
+            array(
+                'lang' => $language
             )
         );
 
@@ -210,9 +319,9 @@ class Bs_Formular2_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/bs-formular2-admin.css', array(), $this->version, 'all' );
-        wp_enqueue_style( $this->plugin_name.'-tools', plugin_dir_url( __FILE__ ) . 'css/tools.css', array(), $this->version, false );
-        wp_enqueue_style( $this->plugin_name.'-Glyphter', plugin_dir_url( __FILE__)  . 'css/Glyphter.css', array(), $this->version, false );
+		wp_enqueue_style( $this->basename, plugin_dir_url( __FILE__ ) . 'css/bs-formular2-admin.css', array(), $this->version, 'all' );
+        wp_enqueue_style( $this->basename.'-tools', plugin_dir_url( __FILE__ ) . 'css/tools.css', array(), $this->version, false );
+        wp_enqueue_style( $this->basename.'-Glyphter', plugin_dir_url( __FILE__)  . 'css/Glyphter.css', array(), $this->version, false );
 	}
 
 	/**

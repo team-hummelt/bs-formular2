@@ -31,7 +31,6 @@ if (!defined('WPINC')) {
     die;
 }
 
-
 /**
  * Check is Install OLD BS-Formular-Version
  *
@@ -102,6 +101,12 @@ const BS_FORMULAR_QUERY_URI = 1206711901102021;
  */
 const BS_FORMULAR2_SETTINGS_ID = 1;
 
+
+/**
+ * Plugin benötigt eine Lizenz zur aktivierung
+ * @since             1.0.0
+ */
+const BS_FORMULAR2_Requires_Activation = false;
 
 /**
  * PLUGIN SLUG

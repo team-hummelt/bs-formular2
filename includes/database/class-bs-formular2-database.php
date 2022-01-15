@@ -54,15 +54,15 @@ class BS_Formular2_Database
         }
     }
 
-
     public function set_bs_formular2_defaults()
     {
-      $defSettings = $this->get_theme_default_settings('default_formular_messages');
-      apply_filters('set_formular2_settings', 'form_meldungen', json_encode($defSettings));
 
+      $settings = apply_filters('bs_form_get_settings_by_select', 'form_meldungen');
+      if(!$settings->status) {
+          $defSettings = $this->get_theme_default_settings('default_formular_messages');
+          apply_filters('set_formular2_settings', 'form_meldungen', json_encode($defSettings));
+      }
     }
-
-
 
     /**
      *
@@ -138,6 +138,25 @@ class BS_Formular2_Database
        PRIMARY KEY (id)
      ) $charset_collate;";
         dbDelta($sql);
+
+        $table_name = $wpdb->prefix . $this->table_formular2_extensions;
+        $charset_collate = $wpdb->get_charset_collate();
+        $sql = "CREATE TABLE $table_name (
+        id mediumint(9) NOT NULL AUTO_INCREMENT,
+        aktiv tinyint(1) NOT NULL,
+        bezeichnung varchar(256) NOT NULL UNIQUE,
+        client_id varchar(80) NOT NULL,
+        client_secret varchar(80) NOT NULL,
+        extension_scope varchar(24) NOT NULL,
+        extension_dir text NOT NULL,
+        extension_root_file varchar(255) NOT NULL,
+        activate_time varchar(24) NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+       PRIMARY KEY (id)
+     ) $charset_collate;";
+        dbDelta($sql);
     }
+
+
 
 }

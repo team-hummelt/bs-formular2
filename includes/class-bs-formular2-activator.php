@@ -31,6 +31,7 @@ class Bs_Formular2_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
+        if(BS_FORMULAR2_Requires_Activation):
         $register = BS_FORMULAR2_PLUGIN_ADMIN_DIR . 'class-bs-formular2-admin.php';
         $options = get_option( 'bs-formular2_server_api');
         if(!$options['product_install_authorize']){
@@ -41,6 +42,7 @@ class Bs_Formular2_Activator {
         $infoTxt = 'aktiviert am ' . date('d.m.Y H:i:s')."\r\n";
         file_put_contents(BS_FORMULAR2_PLUGIN_ADMIN_DIR . BS_FORMULAR2_BASENAME. '-license.txt',$infoTxt,  FILE_APPEND | LOCK_EX);
         set_transient(BS_FORMULAR2_BASENAME . '_lizenz_info', true, 5);
-	}
+	    endif;
+    }
 }
 

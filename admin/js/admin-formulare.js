@@ -267,11 +267,11 @@ jQuery(document).ready(function ($) {
     }
 
     function render_template_form_meldungen(data, list) {
-
+        let l = bs_form_lang.lang.create_edit;
         let html = `
            <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray" style="min-height: 50vh">
            <div class="d-flex align-items-center">
-           <h5><i class="font-blue fa fa-wordpress"></i>&nbsp; Formular Meldungen</h5>
+           <h5><i class="font-blue fa fa-wordpress"></i>&nbsp; ${l[1]}</h5>
            <div class="ajax-status-spinner ms-auto d-inline-block mb-2 pe-2"></div>
            </div>
            <hr>
@@ -279,28 +279,28 @@ jQuery(document).ready(function ($) {
                   <button data-bs-toggle="collapse" data-bs-target="#collapseCreateFormularSite"
                           class="btn-back-to-formular btn btn-outline-success btn-sm me-1" type="button">
                       <i class="fa fa-reply-all"></i>
-                      &nbsp;zurück zum Formular
+                      &nbsp;${l[2]}
                   </button>
                   <button data-id="${data.id}" data-bs-toggle="collapse" data-bs-target="#collapseEmailEditSite" 
                    id="formEditBtn" class="btn btn-blue-outline btn-sm me-1">
                   <i class="fa fa-envelope-o"></i>
-                      &nbsp;E-Mail
+                      &nbsp;${l[3]}
                   </button>
                   
                   <button class="custom-btn btn btn-blue btn-sm me-1" disabled>
                   <i class="fa fa-align-justify"></i>
-                      &nbsp;Meldungen
+                      &nbsp;${l[4]}
                   </button>
                </div>
           <hr>
-              <h6><i class="font-blue fa fa-edit"></i>&nbsp; <b>Formular bearbeiten</b>
-                <small class="d-block">erstellt am ${data.date} um ${data.time}</small>
-                <small class="d-block"><b class="font-blue">Shortcode: [bs-formular id="${data.shortcode}"]</b></small>
+              <h6><i class="font-blue fa fa-edit"></i>&nbsp; <b>${l[5]}</b>
+                <small class="d-block">${l[6]} ${data.date} ${l[7]} ${data.time}</small>
+                <small class="d-block"><b class="font-blue">${l[8]} [bs-formular id="${data.shortcode}"]</b></small>
               </h6>
               <hr>
-              <h5>Meldungen
+              <h5>${l[4]}
               <small style="font-size: .95rem" class="d-block fw-lighter">
-              Hier können Meldungen bearbeitet werden, die in verschiedenen Situationen verwendet werden. 
+              ${l[9]}
               </small>
               </h5>
               <hr>
@@ -316,7 +316,7 @@ jQuery(document).ready(function ($) {
                  </div>`;
         });
         html += `
-            <button type="submit" class="btn btn-blue btn-sm my-3"> <i class="fa fa-save"></i>&nbsp; Änderungen speichern</button>
+            <button type="submit" class="btn btn-blue btn-sm my-3"> <i class="fa fa-save"></i>&nbsp; ${l[10]}</button>
             </form>
             </div>
         `;
@@ -363,34 +363,37 @@ jQuery(document).ready(function ($) {
     }
 
     function render_bs_formular_edit_template(data, select=false) {
+
+        let l = bs_form_lang.lang.create_edit;
+
         let html = `
            <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray" style="min-height: 50vh">
-           <h5><i class="font-blue fa fa-wordpress"></i>&nbsp;Formular ${data ? 'bearbeiten' : 'erstellen'}</h5>
+           <h5><i class="font-blue fa fa-wordpress"></i>&nbsp;${l[11]} ${data ? l[12] : l[13]}</h5>
            <hr>
               <div class="d-md-flex flex-wrap d-block align-items-center">
                    <button data-bs-toggle="collapse" data-bs-target="#collapseFormularOverviewSite" 
                    class="btn-back-to-table btn btn-outline-success btn-sm me-1" type="button">
                    <i class="fa fa-reply-all"></i>
-                      &nbsp;zurück zur Übersicht
+                      &nbsp;${l[14]}
                   </button>
                   <button data-id="${data && data.id ? data.id : ''}" data-bs-toggle="collapse" data-bs-target="#collapseEmailEditSite" 
                    id="formEditBtn" class="btn btn-blue-outline btn-sm me-1" ${data ? '' : 'disabled'}>
                   <i class="fa fa-envelope-o"></i>
-                      &nbsp;E-Mail
+                      &nbsp;${l[3]}
                   </button>
                   
                   <button data-id="${data && data.id ? data.id : ''}" data-bs-toggle="collapse" data-bs-target="#collapseEmailMeldungenSite" 
                    id="formMeldungenBtn" class="btn btn-blue-outline btn-sm me-1" ${data ? '' : 'disabled'}>
                   <i class="fa fa-align-justify"></i>
-                      &nbsp;Meldungen
+                      &nbsp;${l[4]}
                   </button>
 
               </div>
               <hr>
               <span class="${data ? '' : 'd-none'}">
-              <h6><i class="font-blue fa fa-edit"></i>&nbsp; <b>Formular bearbeiten</b>
-                <small class="d-block">erstellt am ${data && data.date ? data.date : ''} um ${data && data.time ? data.time : ''}</small>
-                <small class="d-block"><b class="font-blue">Shortcode: [bs-formular id="${data && data.shortcode ? data.shortcode : ''}"]</b></small>
+              <h6><i class="font-blue fa fa-edit"></i>&nbsp; <b>${l[5]}</b>
+                <small class="d-block">${l[6]} ${data && data.date ? data.date : ''} ${l[7]} ${data && data.time ? data.time : ''}</small>
+                <small class="d-block"><b class="font-blue">${l[8]} [bs-formular id="${data && data.shortcode ? data.shortcode : ''}"]</b></small>
               </h6>
               <hr>
               </span>
@@ -400,7 +403,7 @@ jQuery(document).ready(function ($) {
                   <input id="formId" type="hidden" name="id" value="${data && data.id ? data.id : ''}"/>
                   <div class="d-flex flex-wrap align-items-center">
                   <div class="col-xl-4 col-lg-6 col-12 mb-3">
-                          <label for="formularNameInput" class="form-label">Formularbezeichnung:
+                          <label for="formularNameInput" class="form-label">${l[15]}
                           <span class="text-danger">*</span>
                       </label>
                       <input type="text" value="${data && data.bezeichnung ? data.bezeichnung : ''}" name="bezeichnung" class="form-control"
@@ -416,7 +419,7 @@ jQuery(document).ready(function ($) {
                               class="btn-form-element btn btn-blue-outline btn-sm mb-1">text
                       </button>
                       <button type="button" data-type="password"
-                              class="btn-form-element btn btn-blue-outline btn-sm mb-1">passwort
+                              class="btn-form-element btn btn-blue-outline btn-sm mb-1">${l[16]}
                       </button>
                       <button type="button" data-type="email"
                               class="btn-form-element btn btn-blue-outline btn-sm mb-1">email
@@ -452,7 +455,7 @@ jQuery(document).ready(function ($) {
                         class="btn-form-element btn btn-blue-outline btn-sm mb-1">File Upload
                       </button>
                        <button type="button" data-type="dataprotection"
-                              class="btn-form-element btn btn-blue-outline btn-sm mb-1">Datenschutz prüfen
+                              class="btn-form-element btn btn-blue-outline btn-sm mb-1">${l[17]}
                       </button>
                       <button type="button" data-type="button"
                               class="btn-form-element btn btn-blue-outline btn-sm mb-1">button
@@ -462,64 +465,64 @@ jQuery(document).ready(function ($) {
                   <textarea name="formular" rows="25" cols="50" id="InputText"
                             class="large-text code mb-3" required>${data && data.user_layout ? data.user_layout : ''}</textarea>
                    <hr>
-                   <button type="button" data-parent="collapseDivClass" data-bs-toggle="collapse" data-bs-target="#collapseDivClass"  class="btn-form-settings btn btn-blue-outline btn-sm"> Extra CSS Settings</button>
-                   <button type="button" data-parent="collapseButtonSettings" data-bs-toggle="collapse" data-bs-target="#collapseButtonSettings"  class="btn-form-settings btn btn-blue-outline btn-sm"> Button Settings</button>
-                   <button type="button" data-parent="collapseFormularSettings" data-bs-toggle="collapse" data-bs-target="#collapseFormularSettings"  class="btn-form-settings btn btn-blue-outline btn-sm"> Formular Settings</button>
+                   <button type="button" data-parent="collapseDivClass" data-bs-toggle="collapse" data-bs-target="#collapseDivClass"  class="btn-form-settings btn btn-blue-outline btn-sm"> ${l[18]}</button>
+                   <button type="button" data-parent="collapseButtonSettings" data-bs-toggle="collapse" data-bs-target="#collapseButtonSettings"  class="btn-form-settings btn btn-blue-outline btn-sm"> ${l[19]}</button>
+                   <button type="button" data-parent="collapseFormularSettings" data-bs-toggle="collapse" data-bs-target="#collapseFormularSettings"  class="btn-form-settings btn btn-blue-outline btn-sm"> ${l[20]}</button>
                    <div id="settings_parent_wrapper">
                    <div class="collapse" id="collapseDivClass" data-bs-parent="#settings_parent_wrapper">
                    <hr>
-                   <h6>CSS Klassen für Formular und Input Elemente hinzufügen?
-                   <div class="form-text">HTML Elemente und CSS Klassen können auch im Eingabefeld individuell hinzugefügt werden.</div>
+                   <h6>${l[21]}
+                   <div class="form-text">${l[22]}</div>
                    </h6>
                    <hr>         
                 <div class="form-check form-switch">
                 <input class="form-check-input" name="class_aktiv" type="checkbox" 
                 data-field="inputDivClass" id="checkDivColappse" ${data && data.class_aktiv ? 'checked' : ''}>
-                <label class="form-check-label" for="checkDivColappse"> Label ausblenden</label>
-                <div class="form-text">Ist Label ausblenden aktiv, wird die Bezeichnung für Input Felder als Platzhalter angezeigt.</div>
+                <label class="form-check-label" for="checkDivColappse"> ${l[23]}</label>
+                <div class="form-text">${l[24]}</div>
                 </div>
                <hr>
                   <div class="col-xl-6 col-lg-8 col-12 my-3">
-                     <label for="formDivWrapperInput" class="form-label">Formular Wrapper Klasse:
+                     <label for="formDivWrapperInput" class="form-label">${l[25]}
                       </label>
                       <input type="text" value="${data && data.form_class ? data.form_class : ''}" name="form_class" class="form-control" id="formDivWrapperInput">
-                      <div class="form-text">z.B. für ein Responsive 2 spaltiges Layout. (<code>row row-cols-1 row-cols-lg-2 g-lg-2 g-1</code>) </div>
+                      <div class="form-text">${l[26]} (<code>row row-cols-1 row-cols-lg-2 g-lg-2 g-1</code>) </div>
                      </div>
                 
                   <div class="col-xl-5 col-lg-6 col-12 my-3">
-                        <label for="formularDivInput" class="form-label">DIV Klasse für Input Elemente:
+                        <label for="formularDivInput" class="form-label">${l[27]}
                       </label>
                       <input type="text" value="${data && data.input_class ? data.input_class : ''}" name="input_class" class="form-control" id="formularDivInput">
-                        <div class="form-text">z.B. <code>col</code> oder <code>mb-3</code> </div>
+                        <div class="form-text">${l[28]} <code>col</code> or <code>mb-3</code> </div>
                      </div>
                      
                   <div class="col-xl-5 col-lg-6 col-12 my-3">
-                    <label for="formularLabelInput" class="form-label">DIV Klasse für Label:
+                    <label for="formularLabelInput" class="form-label">${l[29]}
                       </label>
-                      <input type="text" value="${data && data.label_class ? data.label_class : ''}" name="label_class" placeholder="z.B. mb-1"
+                      <input type="text" value="${data && data.label_class ? data.label_class : ''}" name="label_class" placeholder="${l[28]} mb-1"
                       class="form-control" id="formularLabelInput">
-                     <div class="form-text">Die CSS Klassen für Labels werden <span class="text-danger strong-font-weight">nicht</span> bei Radio oder Checkboxen hinzugefügt. </div>
+                     <div class="form-text">${l[30]} </div>
                      </div>    
                 </div><!--css collapse-->
                 
                   <div class="collapse" id="collapseButtonSettings" data-bs-parent="#settings_parent_wrapper">
                    <hr>
-                   <h6>CSS Klassen für Button hinzufügen?
-                   <div class="form-text">Die Klasse (<code><b class="strong-font-weight">btn</b></code>) wird automatisch hinzugefügt.</div>
+                   <h6>${l[31]}
+                   <div class="form-text">${l[32]}</div>
                    </h6>
                    
                   <div class="col-xl-5 col-lg-6 col-12 my-3">
-                    <label for="formularBTNInput" class="form-label">Button CSS Klassen:
+                    <label for="formularBTNInput" class="form-label">${l[33]}
                       </label>
-                      <input type="text" value="${data && data.btn_class ? data.btn_class : ''}" name="button_class" placeholder="z.B. btn-outline-secondary btn-sm"
+                      <input type="text" value="${data && data.btn_class ? data.btn_class : ''}" name="button_class" placeholder="${l[28]} btn-outline-secondary btn-sm"
                       class="form-control" id="formularBTNInput">
                      </div>   
                      <button type="button" data-bs-toggle="modal"  data-bs-method="get_fa_icons" data-bs-target="#btnIconModal" class="btnSelectIcon btn-add-slider-icon btn-sm ${data && data.btn_icon ? 'd-none' : ''}"> 
-                     Icon hinzufügen</button> 
+                     ${l[34]}</button> 
                         <div class="d-flex align-items-center mb-4">
                          <button onclick="delete_slider_icon(this);" 
                         type="button" class="btn btn-sm btn-outline-danger remove-slider-icon mt-2 btnSelectIcon ${data && data.btn_icon ? '' : 'd-none'}">
-                        <i class="fa fa-trash-o"></i>&nbsp; Icon löschen
+                        <i class="fa fa-trash-o"></i>&nbsp; ${l[35]}
                         </button>
                         <span id="iconContainer" class="slider-icon-wrapper d-inline-block mt-2 ms-2">${data && data.faIcon ? data.faIcon : ''}</span>
                         <input id="iconInput" value="${data && data.btn_icon ? data.btn_icon : ''}" type="hidden" name="btn_icon">
@@ -528,20 +531,20 @@ jQuery(document).ready(function ($) {
                  
                  <div class="collapse" data-bs-parent="#settings_parent_wrapper" id="collapseFormularSettings">
                  <hr>
-                <h6>Weiterleitung nach dem Senden des Formulars</h6>
+                <h6>${l[36]}</h6>
                 
                 <div class="form-check form-switch mb-3">
                 <input onclick="this.blur()" class="form-check-input" name="redirection_aktiv" 
                 type="checkbox" data-bs-toggle="collapse" href="#collapseRedirectSettings" 
                 data-field="inputDivClass" id="checkRedirection" ${data && data.redirect_aktiv ? 'checked' : ''}>
-                <label class="form-check-label" for="checkRedirection"> Redirection aktiv</label>
-                <div class="form-text">Bei aktiver Weiterleitung muss eine Seite ausgewählt werden, die nach dem Absenden aufgerufen werden soll.</div>
+                <label class="form-check-label" for="checkRedirection"> ${l[37]}</label>
+                <div class="form-text">${l[44]}</div>
                 </div>
                     <div class="collapse ${data && data.redirect_aktiv ? 'show' : ''}" id="collapseRedirectSettings">
                         <div class="card p-3">
                         <label for="selectRedirectPage" class="form-label">Redirect Page</label>
                         <select onchange="this.blur()" id="selectRedirectPage" name="redirect_page" class="form-control">
-                           <option>auswählen...</option>`;
+                           <option>${l[39]}</option>`;
                              $.each(select, function (key, val) {
                                  let sel = '';
                                  data.redirect_page == val.id ? sel = 'selected' : sel = '';
@@ -554,11 +557,8 @@ jQuery(document).ready(function ($) {
                         <div class="form-check form-switch my-3">
                         <input onclick="this.blur()" class="form-check-input" name="send_redirection_data_aktiv" 
                         type="checkbox" id="checkRedirectionData" ${data && data.send_redirection_data_aktiv ? 'checked' : ''}>
-                        <label class="form-check-label" for="checkRedirectionData"> Formulardaten an Seite übergeben</label>
-                        <div class="form-text">Es können Daten an die Redirect-Page übergeben werden. <span class="text-danger"> 
-                        Passwörter und Uploads werden nicht weitergeleitet.</span> 
-                        <p>Die Daten stehen unter dem Javascript Object <code>bs_form_ajax_obj.bs_form_redirect_data['shortcode']</code> zur Verfügung.</p>
-                        Ein Bespiel für die Ausgabe eines <i class="text-danger">"redirect_data Objekts"</i> ist unter " <i class="fa fa-life-ring"></i> Hilfe " zu finden.
+                        <label class="form-check-label" for="checkRedirectionData"> ${l[40]}</label>
+                        <div class="form-text">${l[41]}
                         </div>
                         </div>
                     </div>
@@ -569,13 +569,13 @@ jQuery(document).ready(function ($) {
                <hr>
  
                   <button type="submit" class="btn-create btn btn-blue ms-1 mt-2 btn-sm"><i class="fa fa-save"></i>
-                      &nbsp;${data ? 'Änderungen speichern' : 'Formular erstellen'}
+                      &nbsp;${data ? l[10] : l[42]}
                   </button>
                   <button type="button" class="btn-create btn-form-reset ms-1 mt-2 btn btn-blue-outline btn-sm ${data ? 'd-none' : ''}"><i
-                              class="fa fa-repeat"></i> Reset
+                              class="fa fa-repeat"></i> ${l[43]}
                   </button>
                    <button type="submit" class="btn-create btn btn-blue ms-1 mt-2 btn-sm d-none"><i class="fa fa-save"></i>
-                   &nbsp;Änderungen speichern
+                   &nbsp;${l[10]}
                   </button>
               </form>
           </div>
@@ -628,11 +628,12 @@ jQuery(document).ready(function ($) {
      */
     function render_message_template(data) {
         let msg = data.message;
+        let l = bs_form_lang.lang.create_edit;
         let html = `
        <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray">
     <div class="d-flex align-items-center">
         <h5 class="card-title">
-            <i class="font-blue fa fa-wordpress"></i>&nbsp; Nachrichten Settings
+            <i class="font-blue fa fa-wordpress"></i>&nbsp; ${l[45]}
         </h5>
     </div>
     <hr>
@@ -641,23 +642,23 @@ jQuery(document).ready(function ($) {
     <button data-bs-toggle="collapse" data-bs-target="#collapseCreateFormularSite"
             class="btn-back-to-formular btn btn-outline-success btn-sm me-1" type="button">
         <i class="fa fa-reply-all"></i>
-        &nbsp;zurück zum Formular
+        &nbsp;${l[1]}
     </button>
      
      <button class="custom-btn btn btn-blue btn-sm me-1" disabled>
      <i class="fa fa-envelope-o"></i>
-         &nbsp;E-Mail
+         &nbsp;${l[3]}
      </button>
      
      <button id="formMeldungenBtn" data-bs-toggle="collapse" data-bs-target="#collapseEmailMeldungenSite" 
      data-id="${data.id}" class="btn btn-blue-outline btn-sm me-1">
      <i class="fa fa-align-justify"></i>
-         &nbsp;Meldungen
+         &nbsp;${l[4]}
      </button>
     </div>
     <hr>
-      <h6><i class="font-blue fa fa-edit"></i>&nbsp; <b>Formular bearbeiten</b>
-        <small class="d-block">erstellt am ${msg.date} um ${msg.time}</small>
+      <h6><i class="font-blue fa fa-edit"></i>&nbsp; <b>${l[5]}</b>
+        <small class="d-block">${l[6]} ${msg.date} ${l[7]} ${msg.time}</small>
         <small class="d-block"><b class="font-blue">Shortcode: [bs-formular id="${msg.shortcode}"]</b></small>
         </h6>
        <hr>
@@ -666,7 +667,7 @@ jQuery(document).ready(function ($) {
         <input id="formMsgId" type="hidden" name="id" value="${msg.id}">
          
          <div class="col-md-6 mb-3">
-            <label class="form-label" for="InputTemplateSelect">E-Mail Template</label>
+            <label class="form-label" for="InputTemplateSelect">${l[62]}</label>
             <select onchange="this.blur()" name="email_template" value=""
                    class="form-control" id="InputTemplateSelect"> `;
         let sel = '';
@@ -679,7 +680,7 @@ jQuery(document).ready(function ($) {
         </div>
         
         <div class="col-md-6 mb-3">
-            <label class="form-label" for="InputEmailTo">E-Mail senden an: *</label>
+            <label class="form-label" for="InputEmailTo">${l[46]} *</label>
             <input type="email" name="sendTo" value="${msg.email_at}"
                    class="form-control" id="InputEmailTo"
                    aria-describedby="InputEmailTo" required>
@@ -691,38 +692,38 @@ jQuery(document).ready(function ($) {
                    class="form-control" id="InputEmailCC"
                    aria-describedby="InputEmailCC">
             <small id="emailHelp" class="form-text text-muted">
-                Mehrere Empfänger mit Komma oder Semikolon trennen.</small>
+                ${l[47]}</small>
         </div>
         <div class="col-md-6 mb-3">
-            <label class="form-label" for="InputBetreff">Betreff:
+            <label class="form-label" for="InputBetreff">${l[48]}
                 *</label>
             <input type="text" name="betreff" value="${msg.betreff}"
                    class="form-control" id="InputBetreff"
                    aria-describedby="InputBetreff" required>
         </div>
         <hr>
-        <h6 style="font-size: 1.1rem" class="mb-0">Verfügbare Formular Platzhalter</h6>
+        <h6 style="font-size: 1.1rem" class="mb-0">${l[49]}</h6>
         <span class="d-inline-block pb-2" id="placeholderInputs">`;
         $.each(data.values, function (key, val) {
             html += `<span data-value="${val.values}" data-type="message" class="placeholder">${val.values}  </span> | `;
         });
         html += `</span>
         <hr class="my-1 mx-0">
-        <label class="form-label d-block" for="sendMsgContent"><b class="fs-6 strong-font-weight">Nachricht: *</b></label>
+        <label class="form-label d-block" for="sendMsgContent"><b class="fs-6 strong-font-weight">${l[50]}: *</b></label>
         <textarea id="sendMsgContent" name="message_content"
                   class="formulare-tinymce" required>${msg.message} </textarea>
-        <button class="btn btn-blue btn-sm mt-4"><i class="fa fa-save"></i>&nbsp; Speichern
+        <button class="btn btn-blue btn-sm mt-4"><i class="fa fa-save"></i>&nbsp; ${l[51]}
         </button>
     </form>
     <hr>
    
     <h6 style="font-size: 1.1rem" class="mb-0"><i class="font-blue fa fa-caret-down"></i>&nbsp;
-        Automatische Antwort</h6>
+        ${l[52]}</h6>
     <hr>
         <button data-bs-toggle="collapse" data-bs-target="#collapseAutoMsg" class="btn btn-blue-outline btn-sm me-3">
-        <i class="fa fa-toggle-on"></i>&nbsp; anzeigen
+        <i class="fa fa-toggle-on"></i>&nbsp; ${l[53]}
         </button>
-        <span class="text-${msg.response_aktiv ? 'success' : 'danger'}"> Auto-Responder ${msg.response_aktiv ? 'aktiv' : 'nicht aktiviert'}</span>
+        <span class="text-${msg.response_aktiv ? 'success' : 'danger'}"> ${l[54]} ${msg.response_aktiv ? [55] : [56]}</span>
 
      <div class="collapse" id="collapseAutoMsg">
      <hr>
@@ -732,21 +733,21 @@ jQuery(document).ready(function ($) {
         <div class="form-check form-switch">
             <input onclick="this.blur()" class="form-check-input" name="aktiv" 
             type="checkbox" id="checkAutoMessage" ${msg.response_aktiv ? 'checked' : ''}>
-            <label class="form-check-label" for="checkAutoMessage">aktiv</label>
+            <label class="form-check-label" for="checkAutoMessage">${l[55]}</label>
         </div>
             <hr>
             <div class="col-md-6 mb-3">
                 <label class="form-label"
-                       for="InputAutoBetreff">Betreff:</label>
+                       for="InputAutoBetreff">${l[48]}</label>
                 <input type="text" name="auto_betreff" value="${msg.auto_betreff ? msg.auto_betreff : ''}"
                        class="form-control" id="InputAutoBetreff"
                        aria-describedby="InputAutoBetreff">
             </div>
-            <label class="form-label" for="sendMsgAutoContent">Nachricht: *</label>
+            <label class="form-label" for="sendMsgAutoContent">${l[50]}: *</label>
             <textarea id="sendMsgAutoContent" name="auto_msg"
                       class="response-formulare-tinymce"> ${msg.auto_msg ? msg.auto_msg : ''}</textarea>
             <button type="submit" class="btn btn-blue-outline btn-sm mt-4"><i
-                    class="fa fa-save"></i>&nbsp; Auto-Responder speichern
+                    class="fa fa-save"></i>&nbsp; ${l[57]}
             </button>
         </div>
     </form>
@@ -838,34 +839,35 @@ jQuery(document).ready(function ($) {
     }
 
     function email_table_template(data) {
+        let l = bs_form_lang.lang.create_edit;
         let html = `
                <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray" style="min-height: 53vh">
                  <h5 class="card-title">
-                     <i class="font-blue fa fa-wordpress"></i>&nbsp;Empfangene Nachrichten
+                     <i class="font-blue fa fa-wordpress"></i>&nbsp;${l[63]}
                  </h5>
                  <hr>
                 <div id="post-table" class="table-responsive container-fluid pb-5 pt-4">
                      <table id="TablePosts" class="table table-striped nowrap w-100">
                          <thead>
                          <tr>
-                             <th>Empfangen</th>
-                             <th>Formular</th>
-                             <th>Betreff</th>
-                             <th>Shortcode</th>
-                             <th>Empfänger</th>
-                             <th>Absender IP</th>
+                             <th>${l[58]}</th>
+                             <th>${l[11]}</th>
+                             <th>${l[48]}</th>
+                             <th>${l[8]}</th>
+                             <th>${l[59]}</th>
+                             <th>${l[60]}</th>
                              <th></th>
                              <th></th>
                          </tr>
                          </thead>
                          <tfoot>
                          <tr>
-                             <th>Empfangen</th>
-                             <th>Formular</th>
-                             <th>Betreff</th>
-                             <th>Shortcode</th>
-                             <th>Empfänger</th>
-                             <th>Absender IP</th>
+                             <th>${l[58]}</th>
+                             <th>${l[11]}</th>
+                             <th>${l[48]}</th>
+                             <th>${l[8]}</th>
+                             <th>${l[59]}</th>
+                             <th>${l[60]}</th>
                              <th></th>
                              <th></th>
                          </tr>
@@ -874,7 +876,7 @@ jQuery(document).ready(function ($) {
                  </div>
                  <button data-bs-method="delete_email" data-bs-type="all" data-bs-id="" data-bs-toggle="modal" data-bs-target="#formDeleteModal" class="btn btn-outline-danger btn-sm">
                  <i class="fa fa-trash-o"></i>
-                 &nbsp;Alle E-Mail löschen 
+                 &nbsp;${l[61]}
                 </button>
              </div>`;
 
@@ -948,27 +950,6 @@ jQuery(document).ready(function ($) {
         return o;
     };
 
-    /**=========================================
-     ========== AJAX RESPONSE MESSAGE ===========
-     ============================================
-     */
-    function success_message(msg) {
-        let x = document.getElementById("snackbar-success");
-        x.innerHTML = msg;
-        x.className = "show";
-        setTimeout(function () {
-            x.className = x.className.replace("show", "");
-        }, 3000);
-    }
-
-    function warning_message(msg) {
-        let x = document.getElementById("snackbar-warning");
-        x.innerHTML = msg;
-        x.className = "show";
-        setTimeout(function () {
-            x.className = x.className.replace("show", "");
-        }, 3000);
-    }
 
     let deleteModal = document.getElementById('formDeleteModal');
     if (deleteModal) {
@@ -1080,4 +1061,28 @@ function delete_slider_icon(e) {
     formNodes.forEach(function (formNodes) {
         formNodes.classList.toggle('d-none');
     });
+}
+
+
+
+/**=========================================
+ ========== AJAX RESPONSE MESSAGE ===========
+ ============================================
+ */
+function success_message(msg) {
+    let x = document.getElementById("snackbar-success");
+    x.innerHTML = msg;
+    x.className = "show";
+    setTimeout(function () {
+        x.className = x.className.replace("show", "");
+    }, 3000);
+}
+
+function warning_message(msg) {
+    let x = document.getElementById("snackbar-warning");
+    x.innerHTML = msg;
+    x.className = "show";
+    setTimeout(function () {
+        x.className = x.className.replace("show", "");
+    }, 3000);
 }

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BS-Formular\n"
-"POT-Creation-Date: 2021-12-15 14:54+0100\n"
-"PO-Revision-Date: 2022-01-03 22:32+0100\n"
+"POT-Creation-Date: 2022-01-06 00:19+0100\n"
+"PO-Revision-Date: 2022-01-06 00:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -11,238 +11,641 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
-"X-Poedit-Basepath: ../inc\n"
+"X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e\n"
-"X-Poedit-SearchPath-0: admin-pages\n"
-"X-Poedit-SearchPath-1: optionen/metabox/classic\n"
-"X-Poedit-SearchPath-2: .\n"
-"X-Poedit-SearchPath-3: register-bs-formular.php\n"
+"X-Poedit-SearchPath-0: admin\n"
+"X-Poedit-SearchPath-1: includes\n"
+"X-Poedit-SearchPath-2: public\n"
+"X-Poedit-SearchPathExcluded-0: admin/js/tools/tiny5/langs\n"
+"X-Poedit-SearchPathExcluded-1: public/js/filepond\n"
+"X-Poedit-SearchPathExcluded-2: admin/js/tools/tiny5/plugins/codesample\n"
 
-#: admin-pages/bs-formulare.php:18 admin-pages/bs-formulare.php:22
-#: admin-pages/bs-formulare.php:35
+#: admin/class-bs-formular2-admin.php:102
+#: admin/class-bs-formular2-admin.php:103
+msgid "BS-Formular"
+msgstr "BS-Formular 2"
+
+#: admin/partials/bs-formular2-admin-display.php:30
+#: admin/partials/bs-formular2-admin-display.php:43
 msgid "Forms"
 msgstr "Formulare"
 
-#: admin-pages/bs-formulare.php:23 admin-pages/bs-formulare.php:28
+#: admin/partials/bs-formular2-admin-display.php:31
+#: admin/partials/bs-formular2-admin-display.php:36
 msgid "Overview"
 msgstr "Übersicht"
 
-#: admin-pages/bs-formulare.php:38 admin-pages/bs-formulare.php:44
+#: admin/partials/bs-formular2-admin-display.php:46
+#: admin/partials/bs-formular2-admin-display.php:52
 msgid "Create | Edit"
 msgstr "Erstellen | Bearbeiten"
 
-#: admin-pages/bs-formulare.php:47 admin-pages/bs-formulare.php:53
-#: admin-pages/bs-formulare.php:80
+#: admin/partials/bs-formular2-admin-display.php:55
+#: admin/partials/bs-formular2-admin-display.php:61
+#: admin/partials/bs-formular2-admin-display.php:88
 msgid "Inbox"
 msgstr "Posteingang"
 
-#: admin-pages/bs-formulare.php:56 admin-pages/bs-formulare.php:61
+#: admin/partials/bs-formular2-admin-display.php:64
+#: admin/partials/bs-formular2-admin-display.php:69
 msgid "E-Mail Settings"
-msgstr ""
+msgstr "E-Mail-Einstellungen"
 
-#: admin-pages/bs-formulare.php:64
+#: admin/partials/bs-formular2-admin-display.php:72
 msgid "Examples"
 msgstr "Beispiele"
 
-#: admin-pages/bs-formulare.php:69
+#: admin/partials/bs-formular2-admin-display.php:77
+#: admin/partials/bs-formular2-admin-display.php:333
 msgid "Help"
 msgstr "Hilfe"
 
-#: admin-pages/bs-formulare.php:88 admin-pages/bs-formulare.php:97
+#: admin/partials/bs-formular2-admin-display.php:96
+#: admin/partials/bs-formular2-admin-display.php:105
 msgid "Name"
 msgstr "Bezeichnung"
 
-#: admin-pages/bs-formulare.php:89 admin-pages/bs-formulare.php:98
+#: admin/partials/bs-formular2-admin-display.php:97
+#: admin/partials/bs-formular2-admin-display.php:106
 msgid "Shortcode"
-msgstr ""
+msgstr "Shortcode"
 
-#: admin-pages/bs-formulare.php:90 admin-pages/bs-formulare.php:99
+#: admin/partials/bs-formular2-admin-display.php:98
+#: admin/partials/bs-formular2-admin-display.php:107
 msgid "Created"
 msgstr "Erstellt"
 
-#: admin-pages/bs-formulare.php:136
+#: admin/partials/bs-formular2-admin-display.php:144
 msgid "SMTP Settings"
-msgstr ""
+msgstr "SMTP Einstellungen"
 
-#: admin-pages/bs-formulare.php:147
-msgid "Name oder Firma des Absenders:"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:155
+msgid "Name or company of the sender:"
+msgstr "Name oder Firma des Absenders:"
 
-#: admin-pages/bs-formulare.php:162
-msgid "Absender E-Mail:"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:161
+msgid "If the entry remains empty, the page title is used."
+msgstr "Wenn der Eintrag leer bleibt, wird der Seitentitel verwendet."
 
-#: admin-pages/bs-formulare.php:176
+#: admin/partials/bs-formular2-admin-display.php:170
+msgid "Sender Email:"
+msgstr "Email Absender:"
+
+#: admin/partials/bs-formular2-admin-display.php:177
+msgid "In most cases, the provider e-mail must be entered here."
+msgstr ""
+"In den meisten Fällen, muss hier die Provider-E-Mail eingegeben werden."
+
+#: admin/partials/bs-formular2-admin-display.php:183
 msgid "SMTP Host:"
-msgstr ""
+msgstr "SMTP Host:"
 
-#: admin-pages/bs-formulare.php:189
+#: admin/partials/bs-formular2-admin-display.php:196
 msgid "SMTP Port:"
-msgstr ""
+msgstr "SMTP Port:"
 
-#: admin-pages/bs-formulare.php:199
+#: admin/partials/bs-formular2-admin-display.php:206
 msgid "SMTP Secure:"
-msgstr ""
+msgstr "SMTP Secure:"
 
-#: admin-pages/bs-formulare.php:211
-msgid "Benutzername:"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:218
+msgid "Username:"
+msgstr "Benutzername"
 
-#: admin-pages/bs-formulare.php:221
-msgid "Passwort:"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:228
+msgid "Password:"
+msgstr "Passwort"
 
-#: admin-pages/bs-formulare.php:236
-msgid "SMTP Authentifizierung:"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:243
+msgid "SMTP Authentication:"
+msgstr "SMTP Authentication:"
 
-#: admin-pages/bs-formulare.php:251
+#: admin/partials/bs-formular2-admin-display.php:253
+msgid "Save email"
+msgstr "E-Mail speichern"
+
+#: admin/partials/bs-formular2-admin-display.php:254
+msgid "active"
+msgstr "aktiv"
+
+#: admin/partials/bs-formular2-admin-display.php:258
 msgid "File Upload Settings"
-msgstr ""
+msgstr "File Upload Settings"
 
-#: admin-pages/bs-formulare.php:258
-msgid "maximale File Größe (MB):"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:265
+msgid "Maximum File Size (MB):"
+msgstr "maximale File Größe (MB):"
 
-#: admin-pages/bs-formulare.php:268
-msgid "maximale gesamt Upload-Größe (MB:)"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:275
+msgid "maximum total upload size (MB:)"
+msgstr "maximale gesamt Upload-Größe (MB:)"
 
-#: admin-pages/bs-formulare.php:280
-msgid "Max. Files pro E-Mail"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:287
+msgid "Max. Files per e-mail"
+msgstr "Max. Files pro E-Mail"
 
-#: admin-pages/bs-formulare.php:289
+#: admin/partials/bs-formular2-admin-display.php:296
 msgid "File-Upload MimeTypes"
-msgstr ""
+msgstr "File-Upload MimeTypes"
 
-#: admin-pages/bs-formulare.php:323
-msgid "Hilfe"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:303
+msgid "Separate MimeTypes with comma or semicolon.<br> (e.g. pdf, jpg, png)"
+msgstr "MimeTypes mit Komma oder Semikolon trennen.<br> (z.B. pdf, jpg, png)"
 
-#: admin-pages/bs-formulare.php:569 license/register-hupa-plugin.php:54
-#: license/register-hupa-plugin.php:55
-msgid "BS-Formular"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:313
+msgid "Multiple uploads active"
+msgstr "Multiple Uploads aktiv"
 
-#: license/activate-bs-formular-page.php:66
-msgid "Client ID"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:320
+msgid "SMTP Test"
+msgstr "SMTP Test"
 
-#: license/activate-bs-formular-page.php:74
-msgid "Client secret"
-msgstr ""
+#: admin/partials/bs-formular2-admin-display.php:612
+msgid "BS-Formular 2"
+msgstr "BS-Formular 2"
 
-#: optionen/filter/bs-formular-filter.php:152
-#: optionen/filter/bs-formular-filter.php:200
-msgid "auswählen"
-msgstr ""
-
-#: optionen/metabox/classic/bs-formular-widget.php:23
-#: optionen/metabox/classic/bs-formular-widget.php:81
-msgid "BS Forms"
-msgstr ""
-
-#: optionen/metabox/classic/bs-formular-widget.php:84
-msgid "Social Media"
-msgstr ""
-
-#: optionen/metabox/classic/bs-formular-widget.php:91
-msgid "Title"
-msgstr "Titel"
-
-#: optionen/metabox/classic/bs-formular-widget.php:100
-msgid "Select form"
-msgstr "Formular auswählen"
-
-#: optionen/metabox/classic/bs-formular-widget.php:103
-msgid "select"
-msgstr "auswählen"
-
-#: register-bs-formular.php:106 register-bs-formular.php:107
-#, fuzzy
-#| msgid "BS Formular"
-msgid "Formulare"
-msgstr "BS Formular"
-
-#: register-bs-formular.php:149
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:76
 msgid "Select file"
 msgstr "Datei auswählen"
 
-#: register-bs-formular.php:151
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:78
 msgid "Drag and drop the file here."
 msgstr "Datei hier per Drag & Drop ablegen."
 
-#: register-bs-formular.php:153
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:80
 msgid "Upload error"
 msgstr "Fehler beim Upload"
 
-#: register-bs-formular.php:155
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:82
 msgid "Try again"
 msgstr "erneut versuchen"
 
-#: register-bs-formular.php:157
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:84
 msgid "Tap to cancel"
 msgstr "zum Abbrechen antippen"
 
-#: register-bs-formular.php:159
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:86
 msgid "Click to delete"
 msgstr "zum Löschen klicken"
 
-#: register-bs-formular.php:161
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:88
 msgid "remove"
 msgstr "entfernen"
 
-#: register-bs-formular.php:164
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:91
 msgid "File is too large"
 msgstr "Datei ist zu groß"
 
-#: register-bs-formular.php:166
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:93
 msgid "Maximum file size is {filesize}"
 msgstr "Maximale Dateigröße ist {filesize}"
 
-#: register-bs-formular.php:168
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:95
 msgid "Maximum total size exceeded"
 msgstr "Maximale Gesamtgröße überschritten"
 
-#: register-bs-formular.php:170
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:97
 msgid "Maximum total size of the file is {filesize}"
 msgstr "Maximale Gesamtgröße der Datei ist {filesize}"
 
-#: register-bs-formular.php:172
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:99
 msgid "Invalid file type"
 msgstr "Ungültiger Dateityp"
 
-#: register-bs-formular.php:174
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:101
 msgid "Expects {allButLastType} or {lastType}"
 msgstr "Erwartet {allButLastType} oder {lastType}"
 
-#: register-bs-formular.php:404
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:105
+msgid "Form messages"
+msgstr "Formular Meldungen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:107
+msgid "back to the form"
+msgstr "zurück zum Formular"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:109
+msgid "E-mail"
+msgstr "E-Mail"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:111
+msgid "Messages"
+msgstr "Meldungen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:113
+msgid "Edit form"
+msgstr "Formular bearbeiten"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:115
+msgid "created on"
+msgstr "erstellt am"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:117
+msgid "at"
+msgstr "um"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:119
+msgid "Shortcode:"
+msgstr "Shortcode"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:121
+msgid "Messages that are used in various situations can be edited here."
+msgstr ""
+"Hier können Meldungen bearbeitet werden, die in verschiedenen Situationen "
+"verwendet werden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:123
+msgid "Save changes"
+msgstr "Änderungen speichern"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:126
+msgid "Form"
+msgstr "Formular"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:128
+msgid "edit"
+msgstr "bearbeiten"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:130
+msgid "create"
+msgstr "Erstellen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:132
+msgid "back to the overview"
+msgstr "zurück zur Übersicht"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:134
+msgid "Form description:"
+msgstr "Formularbezeichnung:"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:136
+msgid "password"
+msgstr "passwort"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:138
+msgid "Check data protection"
+msgstr "Datenschutz prüfen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:140
+msgid "Extra CSS Settings"
+msgstr "Extra CSS Settings"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:142
+msgid "Button Settings"
+msgstr "Button Settings"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:144
+msgid "Form Settings"
+msgstr "Formular Settings"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:146
+msgid "Add CSS classes for form and input elements?"
+msgstr "CSS Klassen für Formular und Input Elemente hinzufügen?"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:148
+msgid ""
+"HTML elements and CSS classes can also be added individually in the input "
+"field."
+msgstr ""
+"HTML Elemente und CSS Klassen können auch im Eingabefeld individuell "
+"hinzugefügt werden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:150
+msgid "Hide label"
+msgstr "Label ausblenden"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:152
+msgid ""
+"If Hide Label is active, the label for input fields is displayed as a "
+"placeholder."
+msgstr ""
+"Ist Label ausblenden aktiv, wird die Bezeichnung für Input Felder als "
+"Platzhalter angezeigt."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:154
+msgid "Form wrapper class:"
+msgstr "Formular Wrapper Klasse:"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:156
+msgid "e.g. for a Responsive 2-column layout."
+msgstr "z.B. für ein Responsive 2 spaltiges Layout."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:158
+msgid "DIV class for input elements:"
+msgstr "DIV Klasse für Input Elemente:"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:160
+msgid "e.g."
+msgstr "z.B."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:162
+msgid "DIV class for label:"
+msgstr "DIV Klasse für Label:"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:164
+msgid ""
+"The CSS classes for labels are <span class=\"text-danger strong-font-weight"
+"\">not</span> added for radio or checkboxes."
+msgstr ""
+"Die CSS Klassen für Labels werden <span class=\"text-danger strong-font-"
+"weight\">nicht</span> bei Radio oder Checkboxen hinzugefügt."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:166
+msgid "Add CSS classes for button?"
+msgstr "CSS Klassen für Button hinzufügen?"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:168
+msgid ""
+"The class (<code><b class=\"strong-font-weight\">btn</b></code>)  will be "
+"added automatically."
+msgstr ""
+"Die Klasse (<code><b class=\"strong-font-weight\">btn</b></code>) wird "
+"automatisch hinzugefügt."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:170
+msgid "Button CSS classes:"
+msgstr "Button CSS Klassen:"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:172
+msgid "Add icon"
+msgstr "Icon hinzufügen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:174
+msgid "Delete icon"
+msgstr "Icon löschen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:176
+msgid "Forwarding after sending the form"
+msgstr "Weiterleitung nach dem Senden des Formulars"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:178
+msgid "Redirection active"
+msgstr "Redirection aktiv"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:180
+msgid "Redirect page"
+msgstr "Redirect Page"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:182
+msgid "select..."
+msgstr "auswählen..."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:184
+msgid "Transfer form data to page"
+msgstr "Formulardaten an Seite übergeben"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:186
+msgid ""
+"Data can be transferred to the redirect page. <span class=\"text-danger\"> "
+"Passwords and uploads are not redirected.</span> <p>The data is under the "
+"Javascript Object  <code>bs_form_ajax_obj."
+"bs_form_redirect_data['shortcode']</code> available.</p> An example of the "
+"output of a <i class=\"text-danger\">\"redirect_data object\"</i> is shown "
+"in \" <i class=\"fa fa-life-ring\"></i> Help \" to find."
+msgstr ""
+"Es können Daten an die Redirect-Page übergeben werden. <span class=\"text-"
+"danger\"> Passwörter und Uploads werden nicht weitergeleitet.</span> <p>Die "
+"Daten stehen unter dem Javascript Object <code>bs_form_ajax_obj."
+"bs_form_redirect_data['shortcode']</code> zur Verfügung.</p> Ein Beispiel "
+"für die Ausgabe eines <i class=\"text-danger\">\"redirect_data Objekts\"</i> "
+"ist unter \" <i class=\"fa fa-life-ring\"></i> Hilfe \" zu finden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:188
+msgid "Create form"
+msgstr "Formular erstellen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:190
+msgid "Reset"
+msgstr "Reset"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:192
+msgid ""
+"If forwarding is active, a page must be selected that is to be called up "
+"after sending."
+msgstr ""
+"Bei aktiver Weiterleitung muss eine Seite ausgewählt werden, die nach dem "
+"Absenden aufgerufen werden soll."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:194
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:196
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:198
+msgid "News Settings"
+msgstr "Nachrichten Settings"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:200
+msgid "Subject:"
+msgstr "Betreff:"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:202
+msgid "Available form placeholders"
+msgstr "Verfügbare Formular Platzhalter"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:204
+msgid "Message"
+msgstr "Nachricht"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:206
+msgid "Save"
+msgstr "Speichern"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:208
+msgid "Automatic reply"
+msgstr "Automatische Antwort"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:210
+msgid "show"
+msgstr "anzeigen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:212
+msgid "Auto-responder"
+msgstr "Auto-Responder"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:214
+msgid "Active"
+msgstr "aktiv"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:216
+msgid "Not activated"
+msgstr "nicht aktiviert"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:218
+msgid "Save auto-responder"
+msgstr "Auto-Responder speichern"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:220
+msgid "Received"
+msgstr "Empfangen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:222
+msgid "Recipient"
+msgstr "Empfänger"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:224
+msgid "Sender IP"
+msgstr "Absender IP"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:226
+msgid "Delete all e-mail"
+msgstr "Alle E-Mail löschen"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:228
+msgid "E-mail template"
+msgstr "E-Mail Template"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:230
+msgid "Received messages"
+msgstr "Empfangene Nachrichten"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:239
+msgid "The sender's message was sent successfully"
+msgstr "Die Nachricht des Absenders wurde erfolgreich gesendet"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:241
+msgid "The message was sent successfully."
+msgstr "Die Nachricht wurde erfolgreich gesendet."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:248
+msgid "The sender's message could not be sent"
+msgstr "Die Nachricht des Absenders konnte nicht gesendet werden"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:250
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:268
+msgid ""
+"An error occurred while trying to send your message. Please try again later."
+msgstr ""
+"Beim Versuch, Ihre Nachricht zu senden, ist ein Fehler aufgetreten. Bitte "
+"versuchen Sie es später noch einmal."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:257
+msgid "Error filling out the form"
+msgstr "Fehler beim Ausfüllen des Formulars"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:259
+msgid "One or more fields have an error. Please check and try again."
+msgstr ""
+"Ein oder mehrere Felder haben einen Fehler. Bitte überprüfen Sie es und "
+"versuchen Sie es erneut."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:266
+msgid "Input was detected as spam"
+msgstr "Eingabe wurde als Spam erkannt"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:275
+msgid "There are conditions that the sender must accept"
+msgstr "Es gibt Bedingungen, die der Absender akzeptieren muss"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:277
+msgid "You must accept the conditions before sending your message."
+msgstr ""
+"Sie müssen die Bedingungen akzeptieren, bevor Sie Ihre Nachricht senden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:284
+msgid "There is a field that the sender must fill in."
+msgstr "Es gibt ein Feld, das der Absender ausfüllen muss"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:286
+msgid "This field must be filled in."
+msgstr "Dieses Feld muss ausgefüllt werden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:293
+msgid "The sender's email address entered is invalid"
+msgstr "Die eingegebene E-Mail-Adresse des Absenders ist ungültig"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:295
+msgid "The e-mail address entered is invalid."
+msgstr "Die eingegebene E-Mail-Adresse ist ungültig."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:302
+msgid "The sender's URL entered is invalid"
+msgstr "Die eingegebene URL des Absenders ist ungültig"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:304
+msgid "The URL is invalid."
+msgstr "Die URL ist unzulässig."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:311
+msgid "The date format entered is invalid"
+msgstr "Das eingegebene Datumsformat ist ungültig"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:313
+msgid "The date format is incorrect."
+msgstr "Das Datumsformat ist falsch."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:320
+msgid "The number format entered is invalid"
+msgstr "Die eingegebene Zahlenformat ist ungültig"
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:322
+msgid "The number format is invalid."
+msgstr "Das Zahlenformat ist ungültig."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:329
+msgid "A field from a selection list must be selected."
+msgstr "Ein Feld aus einer Auswahlliste muss ausgewählt werden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:331
+msgid "A field must be selected."
+msgstr "Es muss ein Feld ausgewählt werden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:338
+msgid "A checkbox must be selected."
+msgstr "Eine Checkbox muss ausgewählt sein."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:340
+msgid "You must agree to this condition."
+msgstr "Sie müssen dieser Bedingung zustimmen."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:347
+msgid "An email (Email Select) must be selected from a drop-down list."
+msgstr ""
+"Eine E-Mail (E-Mail Select) muss aus einer Auswahlliste ausgewählt werden."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:349
+msgid "The selected e-mail address is invalid."
+msgstr "Die ausgewählte E-Mail-Adresse ist ungültig."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:356
+msgid "A file attachment (File Upload) must be selected."
+msgstr "Ein Dateianhang (File-Upload) muss ausgewählt sein."
+
+#: includes/Traits/BS_Formular2_Defaults_Trait.php:358
+msgid "The selected file is invalid."
+msgstr "Die ausgewählte Datei ist ungültig."
+
+#: includes/class-bs-formular2-form-inputs.php:138
+#: includes/class-bs-formular2-form-inputs.php:186
+msgid "select"
+msgstr "auswählen"
+
+#: includes/class-bs-formular2-validate-inputs.php:233
+#: includes/class-bs-formular2-validate-inputs.php:272
+msgid "Nothing selected"
+msgstr "nicht ausgewählt"
+
+#: includes/class-bs-formular2-validate-inputs.php:351
+msgid "selected"
+msgstr "Ausgewählt"
+
+#: includes/class-bs-formular2.php:371
 #, php-format
 msgid ""
 "This plugin has been disabled because it requires a PHP version greater than "
 "%s and a WordPress version greater than %s. Your PHP version can be updated "
 "by your hosting provider."
 msgstr ""
+"Dieses Plugin wurde deaktiviert, weil es eine PHP-Version größer als %s und "
+"eine WordPress-Version größer als %s benötigt. Ihre PHP-Version kann von "
+"Ihrem Hosting-Anbieter aktualisiert werden."
 
-#: update-checker/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:54
-msgid "View details"
-msgstr ""
+#: includes/license/class-register-hupa-plugin.php:84
+#: includes/license/class-register-hupa-plugin.php:85
+msgid "BS-Formular2"
+msgstr "BS-Formular 2"
 
-#: update-checker/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:77
-#, php-format
-msgid "More information about %s"
-msgstr ""
+#, fuzzy
+#~| msgid "BS Formular"
+#~ msgid "bs-formular2"
+#~ msgstr "BS Formular"
 
-#: update-checker/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:128
-msgid "Check for updates"
-msgstr ""
-
-#: update-checker/yahnis-elsts/plugin-update-checker/Puc/v4p11/Plugin/Ui.php:224
-#, php-format
-msgid "Unknown update checker status \"%s\""
-msgstr ""
-
-#: update-checker/yahnis-elsts/plugin-update-checker/Puc/v4p11/Vcs/PluginUpdateChecker.php:98
-msgid "There is no changelog available."
-msgstr ""
+#~ msgid "Title"
+#~ msgstr "Titel"
